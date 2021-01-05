@@ -100,7 +100,8 @@ acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execut
   - [PNPM](https://pnpm.js.org/en/motivation) `5.14.3` (use `Volta` to install it)
   - [Redis](https://redis.io/download) `6.0.9`
   - [Volta](https://volta.sh/) `1.0.0` (use it instead of `nvm`)
-  - [µWebSockets.js](https://github.com/uNetworking/uWebSockets.js) `18.12.0` (`http`/`websocket` server instead of `express.js` et al), I do urge you to go see [motivation and goals](https://github.com/uNetworking/uWebSockets/blob/master/misc/READMORE.md) behind it
+  - [µWebSockets.js](https://github.com/uNetworking/uWebSockets.js) `18.12.0` (`http`/`websocket` server instead of `express.js` et al), I do urge you to go see [motivation and goals](https://github.com/uNetworking/uWebSockets/blob/master/misc/READMORE.md) behind it.
+  - [PM2](https://pm2.keymetrics.io/) as the process manager
 - Front-end
   - [Svelte](https://svelte.dev/) (actually [Sapper](https://sapper.svelte.dev/) but it uses `Svelte`). I invite you to have a look at [why svelte is revolutionary](https://dev.to/hanna/why-svelte-is-revolutionary-415e) if you are curious to see no `ReactJS` here.
   - [OMT](https://github.com/surma/rollup-plugin-off-main-thread) plugin for Rollup to move logic to [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers), so that, you know, the main thead is not blocked by anything other than rendering.
@@ -108,3 +109,10 @@ acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execut
 - Common libs
   - [macaroons.js](https://github.com/nitram509/macaroons.js) to leverage the token related routines
   - [libsodium](https://github.com/jedisct1/libsodium.js) to leverage cryptography related stuff
+
+### WHAT HAS BEEN OMITTED FROM THIS LIST
+
+- Containers. `PM2` will be used for now. For a production deployment I would seriously consider using [Nanos unikernels](https://nanovms.gitbook.io/ops/) instead of the `Docker` specifically for [security reasons](https://nanovms.com/security). If you require more arguments, please do not hesitate to contact me for references - I have a couple of articles bookmarked somewhere.
+- Any cloud related stuff. Cloud seems to be fun. And that is all there is to it really. Want to argue? I am all in, ping me (`hint`: [prices](https://cloudwars.co/amazon/amazon-lyft-8-million-per-month-cloud/), [security](https://news.softpedia.com/news/amazon-accused-of-investing-in-small-companies-stealing-their-ideas-530618.shtml), decreasing level of expertize).
+- Load balancer/TLS terminator, such as [HAProxy](http://www.haproxy.org/), or [NGINX](https://nginx.org/). One of them would definitely be used in a production deployment to handle `TLS` termination and for caching static resources.
+- [Google Flatbuffers](https://google.github.io/flatbuffers/) as a message format. They are not completely banned though. When the system I am about to develop is up and running I will reconsider the `flatbuffers` one more time.
