@@ -86,12 +86,12 @@ acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execut
 5. The `Client` renders the UI of the application
     - the UI issues the GET request to the `/questionnaire/sample` supplying the `AccessToken` of the `GetQuestionnaire` type in the [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) header
     - the server-side code verifies the `AccessToken` supplied and returns a JSON encoded questionnaire
-7. The `User` spends some time filling out the questionnaire
-8. The `User` clicks the submit button when they are ready
-9. The `Client` does a `POST` request to the `/get-access-token` with the TokenType = `PostQuestionnaire`
+6. The `User` spends some time filling out the questionnaire
+7. The `User` clicks the submit button when they are ready
+8. The `Client` does a `POST` request to the `/get-access-token` with the TokenType = `PostQuestionnaire`
     - the server-side returns an `AccessToken` of the `PostQuestionnaire` type
-10. The `Client` issues the `POST` request to the `/questionnaire` supplying the questionnaire in the body and the `AccessToken` of the `PostQuestionnaire` type in the [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) header
-11. The server-side resolves an appropriate recommendation for the `User` and returns it back
+9. The `Client` issues the `POST` request to the `/questionnaire` supplying the questionnaire in the body and the `AccessToken` of the `PostQuestionnaire` type in the [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) header
+10. The server-side resolves an appropriate recommendation for the `User` and returns it back
 
 ## TECH STACK
 
