@@ -51,7 +51,7 @@ The `422` response should have human readable validation errors.
 
 All token types are [Google Macaroons](https://research.google/pubs/pub41892/). The [macaroons.js](https://github.com/nitram509/macaroons.js) library is used to leverage this functionality.
 
-Have a look at why [JWT is bad](https://latacora.micro.blog/a-childs-garden/) and other nice security related stuff.
+Learn why [JWT is bad](https://latacora.micro.blog/a-childs-garden/) and other nice security related stuff.
 
 #### AccountToken
 
