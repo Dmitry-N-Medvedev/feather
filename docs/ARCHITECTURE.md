@@ -92,3 +92,19 @@ acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execut
     - the server-side returns an `AccessToken` of the `PostQuestionnaire` type
 10. The `Client` issues the `POST` request to the `/questionnaire` supplying the questionnaire in the body and the `AccessToken` of the `PostQuestionnaire` type in the [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) header
 11. The server-side resolves an appropriate recommendation for the `User` and returns it back
+
+## TECH STACK
+
+- Back-end
+  - [NodeJs](https://nodejs.org/en/download/) `15.5.1` (use `Volta` to install it)
+  - [PNPM](https://pnpm.js.org/en/motivation) `5.14.3` (use `Volta` to install it)
+  - [Redis](https://redis.io/download) `6.0.9`
+  - [Volta](https://volta.sh/) `1.0.0` (use it instead of `nvm`)
+  - [µWebSockets.js](https://github.com/uNetworking/uWebSockets.js) `18.12.0` (`http`/`websocket` server instead of `express.js` et al), I do urge you to go see [motivation and goals](https://github.com/uNetworking/uWebSockets/blob/master/misc/READMORE.md) behind it
+- Front-end
+  - [Svelte](https://svelte.dev/) (actually [Sapper](https://sapper.svelte.dev/) but it uses `Svelte`). I invite you to have a look at [why svelte is revolutionary](https://dev.to/hanna/why-svelte-is-revolutionary-415e) if you are curious to see no `ReactJS` here.
+  - [OMT](https://github.com/surma/rollup-plugin-off-main-thread) plugin for Rollup to move logic to [web workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers), so that, you know, the main thead is not blocked by anything other than rendering.
+  - [xstate](https://github.com/davidkpiano/xstate) to implement logic of the `Client`.
+- Common libs
+  - [macaroons.js](https://github.com/nitram509/macaroons.js) to leverage the token related routines
+  - [libsodium](https://github.com/jedisct1/libsodium.js) to leverage cryptography related stuff
