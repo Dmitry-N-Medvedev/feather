@@ -1,0 +1,26 @@
+{
+  "name": "@dmitry-n-medvedev/feather",
+  "version": "0.0.0",
+  "description": "insurance resolving system",
+  "engines": {
+    "node": "=15.5.1",
+    "pnpm": "=5.14.3"
+  },
+  "engineStrict": true,
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dmitry-N-Medvedev/feather.git"
+  },
+  "keywords": [
+    "insurance"
+  ],
+  "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dmitry-N-Medvedev/feather/issues"
+  },
+  "homepage": "https://github.com/Dmitry-N-Medvedev/feather#readme"
+}
