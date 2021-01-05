@@ -1,0 +1,22 @@
+dist: focal
+addons:
+language: node_js
+node_js:
+  - 15.5.1
+os: linux
+before_install:
+  - curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=5.14.3 node
+  - pnpm config set store-dir ~/.pnpm-store
+install:
+  - pnpm --recursive install
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+script:
+  - pnpm --recursive run test
+after_success:
+  - pnpm --recursive run coverage
+cache:
+  npm: false
+  directories:
+    - "~/.pnpm-store"
