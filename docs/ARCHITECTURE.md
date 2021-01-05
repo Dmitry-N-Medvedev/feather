@@ -58,7 +58,11 @@ The `422` response should have human readable validation errors.
 }
 ```
 
-The AccountToken is encrypted with 
+The `AccountToken` is encrypted with a secret key readable only by the token related part of the System.
+
+#### AccessToken
+
+An AccountToken is a [google macaroon](https://research.google/pubs/pub41892/).
 
 ### overall workflow
 
