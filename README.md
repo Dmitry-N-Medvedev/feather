@@ -1,5 +1,11 @@
 # Feather Code challenge
 
+[![Build Status](https://travis-ci.com/Dmitry-N-Medvedev/feather.svg?branch=main)](https://travis-ci.com/Dmitry-N-Medvedev/feather)
+[![codecov](https://codecov.io/gh/Dmitry-N-Medvedev/feather/branch/main/graph/badge.svg?token=PH5OAA05B7)](https://codecov.io/gh/Dmitry-N-Medvedev/feather)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0ab746b4da8106b04dc2/maintainability)](https://codeclimate.com/github/Dmitry-N-Medvedev/feather/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0ab746b4da8106b04dc2/test_coverage)](https://codeclimate.com/github/Dmitry-N-Medvedev/feather/test_coverage)
+[![Repo Status](https://apis.deepjyoti30.dev/repostatus/badge?repo=Dmitry-N-Medvedev/feather&style=flat)](https://github.com/Dmitry-N-Medvedev/feather)
+
 Learn the [architecture](docs/ARCHITECTURE.md) used.
 
 ## Overview
