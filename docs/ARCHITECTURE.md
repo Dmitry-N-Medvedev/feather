@@ -1,6 +1,6 @@
-# architecture
+# ARCHITECTURE
 
-## what to be done
+## WHAT TO BE DONE
 
 You will design and implement an API that recommends an insurance policy based on a questionnaire answers.
 
@@ -16,28 +16,27 @@ The API is going to be used by one or more frontend apps. It should be possible 
 
 We won't be judging on the quality of the recommendations, just make sure that it is consistent and corresponds to our offering at [https://feather-insurance.com/](https://feather-insurance.com/).
 
-### questionnaire
+### QUESTIONNAIRE
 
 - First name
 - Address
 - If they have any children (boolean)
-  - If yes → How many do they have?
+  - If yes - How many do they have?
 - Their occupation
   - Employed
   - Student
   - Self-employed
 - Email address
 
-### response codes and errors
+### RESPONSE CODES AND ERRORS
 
 A successful response will have either `200` or `201` status code. A response containing an error will be either `422`, `401` or `500`.
 
 The `422` response should have human readable validation errors.
 
-## how it is done
+## HOW IT IS DONE
 
-
-### terminology
+### TERMINOLOGY
 
 - `System` - a software system capable of recommending insurance options for `Users`.
 - `User` - (hopefully) a human being who wishes to get recommendations from the `System`.
@@ -48,23 +47,33 @@ The `422` response should have human readable validation errors.
     - `GetQuestionnaire` type allows a `Client` to request a description of a questionnaire from the `System`
     - `PostQuestionnaire` type allows a `Client` to transmit the filled out questionnaire to the `System`
 
-### notes on Token format
+### NOTES ON TOKEN FORMAT
+
+All token types are [Google Macaroons](https://research.google/pubs/pub41892/). The [macaroons.js](https://github.com/nitram509/macaroons.js) library is used to leverage this functionality.
+
+Have a look at why [JWT is bad](https://latacora.micro.blog/a-childs-garden/) and other nice security related stuff.
 
 #### AccountToken
 
-```javascript
-{
-  uid: 000, // represents the User Id; 128 bit minimum; see randombytes_buf: https://libsodium.gitbook.io/doc/generating_random_data
-}
-```
+First party caveats:
 
-The `AccountToken` is encrypted with a secret key readable only by the token related part of the System.
+```javascript
+account: 00000000000000000000000000000000, // represents the User Id; 256 bits; see randombytes_buf: https://libsodium.gitbook.io/doc/generating_random_data
+```
 
 #### AccessToken
 
-An AccountToken is a [google macaroon](https://research.google/pubs/pub41892/).
+First party caveats:
 
-### overall workflow
+```javascript
+account: 00000000000000000000000000000000, // represents the User Id; 256 bits; see randombytes_buf: https://libsodium.gitbook.io/doc/generating_random_data
+```
+
+```javascript
+acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execute on the server-side
+```
+
+### OVERALL WORKFLOW
 
 1. A `User` opens the `Client` in their web browser.
 2. The `Client` checks [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to see if there exists an `AccountToken`.
