@@ -1,5 +1,8 @@
 importers:
   sources/back-end/libToken:
+    dependencies:
+      libsodium-wrappers: 0.7.8
+      macaroons.js: 0.3.9
     devDependencies:
       c8: 7.4.0
       chai: 4.2.0
@@ -25,6 +28,8 @@ importers:
       eslint-plugin-chai-friendly: ^0.6.0
       eslint-plugin-import: ^2.22.1
       eslint-plugin-node: ^11.1.0
+      libsodium-wrappers: ^0.7.8
+      macaroons.js: ^0.3.9
       mocha: ^8.2.1
       nanoid: ^3.1.20
       node-fetch: ^2.6.1
@@ -551,6 +556,10 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+  /ecma-nacl/2.5.0:
+    dev: false
+    resolution:
+      integrity: sha512-VrG9jiOTsacP7TCFp8YlbdC2YSQRydo97Jv5feRVa9AJOYI82PWQDhF+8J2ChrWS9RpQ8LnWYhVGZbCNjgCZlA==
   /emoji-regex/7.0.3:
     dev: true
     resolution:
@@ -1199,6 +1208,10 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-OwijhaRSgqvhm/0ZdAcXNZt9lYdKFpcRDT5ULUuYXPoT794UNOdU+gpT6Rzo7b4V2HUl/op6GqY894AZwv9faQ==
+  /is-typedarray/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
   /is-windows/1.0.2:
     dev: true
     engines:
@@ -1286,6 +1299,16 @@ packages:
       node: '>= 0.8.0'
     resolution:
       integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==
+  /libsodium-wrappers/0.7.8:
+    dependencies:
+      libsodium: 0.7.8
+    dev: false
+    resolution:
+      integrity: sha512-PDhPWXBqd/SaqAFUBgH2Ux7b3VEEJgyD6BQB+VdNFJb9PbExGr/T/myc/MBoSvl8qLzfm0W0IVByOQS5L1MrCg==
+  /libsodium/0.7.8:
+    dev: false
+    resolution:
+      integrity: sha512-/Qc+APf0jbeWSaeEruH0L1/tbbT+sbf884ZL0/zV/0JXaDPBzYkKbyb/wmxMHgAHzm3t6gqe7bOOXAVwfqVikQ==
   /load-json-file/2.0.0:
     dependencies:
       graceful-fs: 4.2.4
@@ -1343,6 +1366,16 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
+  /macaroons.js/0.3.9:
+    dependencies:
+      ecma-nacl: 2.5.0
+      typedarray-to-buffer: 3.1.5
+    dev: false
+    engines:
+      node: '>=0.11'
+      npm: '>=1.4'
+    resolution:
+      integrity: sha512-mSAl7o2xVYaN6ZxI/DfrB5G3cuQwW7D4HIwvvk6S5FrY4Ih6EQamV7/OMBW1XD79eiwBcstZ60DREH8M99N67A==
   /make-dir/3.1.0:
     dependencies:
       semver: 6.3.0
@@ -2006,6 +2039,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
+  /typedarray-to-buffer/3.1.5:
+    dependencies:
+      is-typedarray: 1.0.0
+    dev: false
+    resolution:
+      integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   /uri-js/4.4.0:
     dependencies:
       punycode: 2.1.1
