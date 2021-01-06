@@ -71,6 +71,12 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-irregular-whitespace': 0,
     'lines-between-class-members': 0,
-    'import/no-mutable-exports': 0
+    'import/no-mutable-exports': 0,
+    'max-len': [
+      'error',
+      {
+        code: 160,
+      },
+    ],
   },
 };
