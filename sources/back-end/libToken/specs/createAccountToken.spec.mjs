@@ -40,7 +40,7 @@ describe('AccountToken', () => {
     masterKey = libsodium.crypto_kdf_keygen(libsodium.Uint8ArrayOutputFormat);
   });
 
-  it('should create an AccountToken', async () => {
+  it('should createAccountToken', async () => {
     const identifier = createRandomString(libsodium);
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
@@ -76,7 +76,7 @@ describe('AccountToken', () => {
     const resolvedSk = (db[deserializedToken.identifier]).secretKey ?? null;
 
     verifier.satisfyExact(`uid:${resolvedUid}`);
-    verifier.satisfyExact('future:proof:statement');
+    verifier.satisfyExact('future:proof:caveat');
 
     expect(verifier.isValid(resolvedSk)).to.be.true;
   });
