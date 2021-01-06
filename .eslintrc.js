@@ -78,5 +78,13 @@ module.exports = {
         code: 160,
       },
     ],
+    'no-bitwise': [
+      'error',
+      {
+        allow: [
+          '&',
+        ],
+      },
+    ],
   },
 };
