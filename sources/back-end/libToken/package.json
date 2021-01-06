@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./ --ext .mjs",
-    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=giphy-js-fetch-api ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
+    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=libtoken ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
     "coverage": "./node_modules/.bin/c8 report --reporter=text-lcov > ./coverage/coverage.lcov && ./node_modules/.bin/codecov --disable=gcov"
   },
   "keywords": [
