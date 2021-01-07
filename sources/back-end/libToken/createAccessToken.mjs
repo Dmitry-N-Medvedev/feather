@@ -1,10 +1,18 @@
-export const createAccessToken = async (MacaroonBuilder = null, settings = {}, ttl = null) => {
+import {
+  CaveatPrefixes,
+} from './constants/CaveatPrefixes.mjs';
+
+export const createAccessToken = async (MacaroonBuilder = null, settings = {}, ttl = null, action = null) => {
   if (MacaroonBuilder === null) {
     throw new ReferenceError('MacaroonBuilder is undefined');
   }
 
   if (ttl === null) {
     throw new ReferenceError('ttl is undefined');
+  }
+
+  if (action === null) {
+    throw new ReferenceError('action is undefined');
   }
 
   // TODO: use ajv: https://github.com/ajv-validator/ajv
@@ -23,8 +31,9 @@ export const createAccessToken = async (MacaroonBuilder = null, settings = {}, t
 
   return MacaroonBuilder
     .modify(result)
-    .add_first_party_caveat(`uid:${uid}`)
-    .add_first_party_caveat(`ttl:${ttl.from}:${ttl.upto}`)
+    .add_first_party_caveat(`${CaveatPrefixes.UserId}:${uid}`)
+    .add_first_party_caveat(`${CaveatPrefixes.TimeScope}:${ttl.from}:${ttl.upto}`)
+    .add_first_party_caveat(`${CaveatPrefixes.Action}:${action.type}:${action.object}`)
     .getMacaroon()
     .serialize();
 };
