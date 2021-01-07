@@ -1,10 +1,6 @@
-export const createAccessToken = async (MacaroonBuilder = null, settings = {}, acl = null, ttl = null) => {
+export const createAccessToken = async (MacaroonBuilder = null, settings = {}, ttl = null) => {
   if (MacaroonBuilder === null) {
     throw new ReferenceError('MacaroonBuilder is undefined');
-  }
-
-  if (acl === null) {
-    throw new ReferenceError('acl is undefined');
   }
 
   if (ttl === null) {
@@ -29,7 +25,6 @@ export const createAccessToken = async (MacaroonBuilder = null, settings = {}, a
     .modify(result)
     .add_first_party_caveat(`uid:${uid}`)
     .add_first_party_caveat(`ttl:${ttl.from}:${ttl.upto}`)
-    .add_first_party_caveat(`acl:${acl}`)
     .getMacaroon()
     .serialize();
 };

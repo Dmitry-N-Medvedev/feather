@@ -9,9 +9,6 @@ import {
   createAccessToken,
 } from '../createAccessToken.mjs';
 import {
-  AccessTokenTypes,
-} from '../AccessTokenTypes.mjs';
-import {
   createRandomString,
 } from '../createRandomString.mjs';
 import {
@@ -20,9 +17,6 @@ import {
 import {
   TimescopeVerifier,
 } from '../verifiers/TimescopeVerifier.mjs';
-import {
-  ACLVerifier,
-} from '../verifiers/ACLVerifier.mjs';
 
 const {
   describe,
@@ -58,7 +52,6 @@ describe('AccessToken', () => {
       identifier,
       uid,
     };
-    const acl = AccessTokenTypes.ReadQuestionnaireList;
     const ttl = Object.freeze({
       from: Date.now(),
       upto: Date.now() + 1000,
@@ -72,7 +65,7 @@ describe('AccessToken', () => {
     const {
       MacaroonsBuilder,
     } = macaroons;
-    const accessToken = await createAccessToken(MacaroonsBuilder, tokenSettings, acl, ttl);
+    const accessToken = await createAccessToken(MacaroonsBuilder, tokenSettings, ttl);
 
     const deserializedToken = MacaroonsBuilder.deserialize(accessToken);
     const {
@@ -82,11 +75,9 @@ describe('AccessToken', () => {
     const verifier = new MacaroonsVerifier(deserializedToken);
     const resolvedUid = (db[deserializedToken.identifier]).uid ?? null;
     const resolvedSk = (db[deserializedToken.identifier]).secretKey ?? null;
-    const expectedACL = AccessTokenTypes.ReadQuestionnaireList;
 
     verifier.satisfyExact(`uid:${resolvedUid}`);
     verifier.satisfyGeneral(TimescopeVerifier);
-    verifier.satisfyGeneral(ACLVerifier(expectedACL));
     verifier.satisfyExact('future:proof:caveat');
 
     expect(verifier.isValid(resolvedSk)).to.be.true;
