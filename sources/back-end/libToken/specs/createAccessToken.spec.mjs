@@ -13,7 +13,7 @@ import {
 } from '../createRandomString.mjs';
 import {
   deriveSubKey,
-} from '../deriveSubKey.mjs';
+} from '../helpers/deriveSubKey.mjs';
 import {
   TimescopeVerifier,
 } from '../verifiers/TimescopeVerifier.mjs';
