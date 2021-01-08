@@ -43,7 +43,7 @@ describe('AccountToken', () => {
     masterKey = libsodium.crypto_kdf_keygen(libsodium.Uint8ArrayOutputFormat);
   });
 
-  it.only('should createAccountToken', async () => {
+  it('should createAccountToken', async () => {
     const identifier = createRandomString(libsodium);
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
