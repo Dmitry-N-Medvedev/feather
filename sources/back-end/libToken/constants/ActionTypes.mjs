@@ -1,4 +1,5 @@
 export const ActionTypes = Object.freeze({
-  get: 0x01,
-  post: 0x02,
+  READ: 0x01, // read - GET a file
+  WRITE: 0x02, // write - not used. Should be used to change a file on the server.
+  EXECUTE: 0x04, // execute - POST results
 });
