@@ -45,7 +45,7 @@ describe('AccessToken', () => {
     masterKey = libsodium.crypto_kdf_keygen(libsodium.Uint8ArrayOutputFormat);
   });
 
-  it.only('should createAccessToken', async () => {
+  it('should createAccessToken', async () => {
     const identifier = createRandomString(libsodium);
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
@@ -60,7 +60,7 @@ describe('AccessToken', () => {
       upto: Date.now() + 5000,
     });
     const action = Object.freeze({
-      type: ActionTypes.get,
+      type: ActionTypes.READ,
       object: '/questionnaire.json',
     });
     const db = Object.freeze({
@@ -77,7 +77,7 @@ describe('AccessToken', () => {
     const deserializedAccessToken = MacaroonsBuilder.deserialize(accessToken);
     const resolvedUid = (db[deserializedAccessToken.identifier]).uid ?? null;
     const resolvedSk = (db[deserializedAccessToken.identifier]).secretKey ?? null;
-    const expectedActionType = ActionTypes.get;
+    const expectedActionType = ActionTypes.READ;
     const expectedActionObject = '/questionnaire.json';
 
     expect(verifyAccessToken(macaroons, deserializedAccessToken, resolvedUid, resolvedSk, expectedActionType, expectedActionObject)).to.be.true;
