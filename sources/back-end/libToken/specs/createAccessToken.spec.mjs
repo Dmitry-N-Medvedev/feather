@@ -15,17 +15,11 @@ import {
   deriveSubKey,
 } from '../helpers/deriveSubKey.mjs';
 import {
-  TimescopeVerifier,
-} from '../verifiers/TimescopeVerifier.mjs';
-import {
   ActionTypes,
 } from '../constants/ActionTypes.mjs';
 import {
-  ActionVerifier,
-} from '../verifiers/ActionVerifier.mjs';
-import {
-  CaveatPrefixes,
-} from '../constants/CaveatPrefixes.mjs';
+  verifyAccessToken,
+} from '../verifiers/verifyAccessToken.mjs';
 
 const {
   describe,
@@ -51,7 +45,7 @@ describe('AccessToken', () => {
     masterKey = libsodium.crypto_kdf_keygen(libsodium.Uint8ArrayOutputFormat);
   });
 
-  it('should createAccessToken', async () => {
+  it.only('should createAccessToken', async () => {
     const identifier = createRandomString(libsodium);
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
@@ -80,22 +74,12 @@ describe('AccessToken', () => {
     } = macaroons;
     const accessToken = await createAccessToken(MacaroonsBuilder, tokenSettings, ttl, action);
 
-    const deserializedToken = MacaroonsBuilder.deserialize(accessToken);
-    const {
-      MacaroonsVerifier,
-    } = macaroons;
-
-    const verifier = new MacaroonsVerifier(deserializedToken);
-    const resolvedUid = (db[deserializedToken.identifier]).uid ?? null;
-    const resolvedSk = (db[deserializedToken.identifier]).secretKey ?? null;
+    const deserializedAccessToken = MacaroonsBuilder.deserialize(accessToken);
+    const resolvedUid = (db[deserializedAccessToken.identifier]).uid ?? null;
+    const resolvedSk = (db[deserializedAccessToken.identifier]).secretKey ?? null;
     const expectedActionType = ActionTypes.get;
     const expectedActionObject = '/questionnaire.json';
 
-    verifier.satisfyExact(`${CaveatPrefixes.UserId}:${resolvedUid}`);
-    verifier.satisfyGeneral(TimescopeVerifier);
-    verifier.satisfyGeneral(ActionVerifier(expectedActionType, expectedActionObject));
-    verifier.satisfyExact('future:proof:caveat');
-
-    expect(verifier.isValid(resolvedSk)).to.be.true;
+    expect(verifyAccessToken(macaroons, deserializedAccessToken, resolvedUid, resolvedSk, expectedActionType, expectedActionObject)).to.be.true;
   });
 });
