@@ -14,6 +14,9 @@ import {
 import {
   deriveSubKey,
 } from '../helpers/deriveSubKey.mjs';
+import {
+  verifyAccountToken,
+} from '../verifiers/verifyAccountToken.mjs';
 
 const {
   describe,
@@ -40,7 +43,7 @@ describe('AccountToken', () => {
     masterKey = libsodium.crypto_kdf_keygen(libsodium.Uint8ArrayOutputFormat);
   });
 
-  it('should createAccountToken', async () => {
+  it.only('should createAccountToken', async () => {
     const identifier = createRandomString(libsodium);
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
@@ -60,24 +63,14 @@ describe('AccountToken', () => {
       MacaroonsBuilder,
     } = macaroons;
     const accountToken = await createAccountToken(MacaroonsBuilder, tokenSettings);
+    const deserializedAccountToken = MacaroonsBuilder.deserialize(accountToken);
 
-    const deserializedToken = MacaroonsBuilder.deserialize(accountToken);
+    expect(deserializedAccountToken.identifier).to.equal(identifier);
+    expect(deserializedAccountToken.location).to.equal(tokenSettings.location);
 
-    expect(deserializedToken.identifier).to.equal(identifier);
-    expect(deserializedToken.location).to.equal(tokenSettings.location);
+    const resolvedUid = (db[deserializedAccountToken.identifier]).uid ?? null;
+    const resolvedSecretKey = (db[deserializedAccountToken.identifier]).secretKey ?? null;
 
-    const {
-      MacaroonsVerifier,
-    } = macaroons;
-
-    const verifier = new MacaroonsVerifier(deserializedToken);
-
-    const resolvedUid = (db[deserializedToken.identifier]).uid ?? null;
-    const resolvedSk = (db[deserializedToken.identifier]).secretKey ?? null;
-
-    verifier.satisfyExact(`uid:${resolvedUid}`);
-    verifier.satisfyExact('future:proof:caveat');
-
-    expect(verifier.isValid(resolvedSk)).to.be.true;
+    expect(verifyAccountToken(macaroons, deserializedAccountToken, resolvedUid, resolvedSecretKey)).to.be.true;
   });
 });

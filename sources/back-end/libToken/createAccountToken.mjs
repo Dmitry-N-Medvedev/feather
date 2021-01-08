@@ -1,3 +1,7 @@
+import {
+  CaveatPrefixes,
+} from './constants/CaveatPrefixes.mjs';
+
 export const createAccountToken = async (MacaroonBuilder = null, settings = {}) => {
   if (MacaroonBuilder === null) {
     throw new ReferenceError('MacaroonBuilder is undefined');
@@ -19,7 +23,7 @@ export const createAccountToken = async (MacaroonBuilder = null, settings = {}) 
 
   return MacaroonBuilder
     .modify(result)
-    .add_first_party_caveat(`uid:${uid}`)
+    .add_first_party_caveat(`${CaveatPrefixes.UserId}:${uid}`)
     .getMacaroon()
     .serialize();
 };
