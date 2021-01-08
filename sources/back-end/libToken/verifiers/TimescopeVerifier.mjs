@@ -1,10 +1,8 @@
-/*
-  caveat = ttl:from:upto
+import {
+  CaveatPrefixes,
+} from '../constants/CaveatPrefixes.mjs';
 
-  e.g.: ttl:1609971405614:1609971406614
-*/
-
-const re = /^ttl:(?<from>\d+):(?<upto>\d+)$/is;
+const re = new RegExp(`^${CaveatPrefixes.TimeScope}:(?<from>\\d+):(?<upto>\\d+)$`, 'si');
 
 export const TimescopeVerifier = (caveat = null) => {
   if (caveat === null) {

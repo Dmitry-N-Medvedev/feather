@@ -9,20 +9,23 @@ import {
   createAccessToken,
 } from '../createAccessToken.mjs';
 import {
-  AccessTokenTypes,
-} from '../AccessTokenTypes.mjs';
-import {
   createRandomString,
 } from '../createRandomString.mjs';
 import {
   deriveSubKey,
-} from '../deriveSubKey.mjs';
+} from '../helpers/deriveSubKey.mjs';
 import {
   TimescopeVerifier,
 } from '../verifiers/TimescopeVerifier.mjs';
 import {
-  ACLVerifier,
-} from '../verifiers/ACLVerifier.mjs';
+  ActionTypes,
+} from '../constants/ActionTypes.mjs';
+import {
+  ActionVerifier,
+} from '../verifiers/ActionVerifier.mjs';
+import {
+  CaveatPrefixes,
+} from '../constants/CaveatPrefixes.mjs';
 
 const {
   describe,
@@ -58,10 +61,13 @@ describe('AccessToken', () => {
       identifier,
       uid,
     };
-    const acl = AccessTokenTypes.ReadQuestionnaireList;
     const ttl = Object.freeze({
       from: Date.now(),
-      upto: Date.now() + 1000,
+      upto: Date.now() + 5000,
+    });
+    const action = Object.freeze({
+      type: ActionTypes.get,
+      object: '/questionnaire.json',
     });
     const db = Object.freeze({
       [identifier]: {
@@ -72,7 +78,7 @@ describe('AccessToken', () => {
     const {
       MacaroonsBuilder,
     } = macaroons;
-    const accessToken = await createAccessToken(MacaroonsBuilder, tokenSettings, acl, ttl);
+    const accessToken = await createAccessToken(MacaroonsBuilder, tokenSettings, ttl, action);
 
     const deserializedToken = MacaroonsBuilder.deserialize(accessToken);
     const {
@@ -82,11 +88,12 @@ describe('AccessToken', () => {
     const verifier = new MacaroonsVerifier(deserializedToken);
     const resolvedUid = (db[deserializedToken.identifier]).uid ?? null;
     const resolvedSk = (db[deserializedToken.identifier]).secretKey ?? null;
-    const expectedACL = AccessTokenTypes.ReadQuestionnaireList;
+    const expectedActionType = ActionTypes.get;
+    const expectedActionObject = '/questionnaire.json';
 
-    verifier.satisfyExact(`uid:${resolvedUid}`);
+    verifier.satisfyExact(`${CaveatPrefixes.UserId}:${resolvedUid}`);
     verifier.satisfyGeneral(TimescopeVerifier);
-    verifier.satisfyGeneral(ACLVerifier(expectedACL));
+    verifier.satisfyGeneral(ActionVerifier(expectedActionType, expectedActionObject));
     verifier.satisfyExact('future:proof:caveat');
 
     expect(verifier.isValid(resolvedSk)).to.be.true;

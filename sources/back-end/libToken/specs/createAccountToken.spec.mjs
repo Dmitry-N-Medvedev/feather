@@ -13,7 +13,7 @@ import {
 } from '../createRandomString.mjs';
 import {
   deriveSubKey,
-} from '../deriveSubKey.mjs';
+} from '../helpers/deriveSubKey.mjs';
 
 const {
   describe,
