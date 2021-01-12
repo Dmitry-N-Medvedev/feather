@@ -4,9 +4,12 @@
   "description": "insurance resolving system",
   "engines": {
     "node": "=15.5.1",
-    "pnpm": "=5.14.3"
+    "pnpm": "=5.15.0"
   },
   "engineStrict": true,
+  "volta": {
+    "node": "15.5.1"
+  },
   "directories": {
     "doc": "docs"
   },
