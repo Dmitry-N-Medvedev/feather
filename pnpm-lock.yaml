@@ -1,5 +1,7 @@
 importers:
-  sources/back-end/libToken:
+  .:
+    specifiers: {}
+  sources/back-end/libs/libToken:
     dependencies:
       libsodium-wrappers: 0.7.8
       macaroons.js: 0.3.9
@@ -471,7 +473,7 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 7.2.0
-    deprecated: 'Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)'
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     dev: true
     engines:
       node: '>=6.0'
