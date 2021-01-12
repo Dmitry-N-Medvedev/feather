@@ -25,5 +25,11 @@
   "bugs": {
     "url": "https://github.com/Dmitry-N-Medvedev/feather/issues"
   },
-  "homepage": "https://github.com/Dmitry-N-Medvedev/feather#readme"
+  "homepage": "https://github.com/Dmitry-N-Medvedev/feather#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/eslint-parser": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "eslint": "^7.17.0"
+  }
 }
