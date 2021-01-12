@@ -19,7 +19,7 @@ export const createAccountToken = async (MacaroonBuilder = null, settings = {}) 
     uid,
   } = settings;
 
-  const result = MacaroonBuilder.create(location, secretKey, identifier);
+  const result = MacaroonBuilder.create(location.toString(), secretKey, identifier);
 
   return MacaroonBuilder
     .modify(result)
