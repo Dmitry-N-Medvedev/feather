@@ -1,12 +1,12 @@
 module.exports = {
   env: {
-    browser: true,
     es6: true,
     node: true,
   },
   extends: [
     'airbnb-base',
     'plugin:node/recommended',
+    'eslint:recommended',
   ],
   plugins: [
     'chai-friendly',
@@ -14,10 +14,13 @@ module.exports = {
   ignorePatterns: [
     '/node_modules/*',
   ],
-  parser: 'espree',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module',
+    // babelOptions: {
+    //   configFile: './babel.config.json',
+    // },
   },
   rules: {
     'no-unused-expressions': 0,
@@ -26,31 +29,31 @@ module.exports = {
     camelcase: 0,
     'node/exports-style': [
       'error',
-      'module.exports'
+      'module.exports',
     ],
     'node/file-extension-in-import': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-global/buffer': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-global/console': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-global/process': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-global/url-search-params': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-global/url': [
       'error',
-      'always'
+      'always',
     ],
     'node/prefer-promises/dns': 'error',
     'node/prefer-promises/fs': 'error',
@@ -65,7 +68,7 @@ module.exports = {
         js: 'always',
         mjs: 'always',
         json: 'always',
-      }
+      },
     ],
     'node/shebang': 0,
     'import/prefer-default-export': 0,
