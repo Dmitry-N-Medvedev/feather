@@ -23,11 +23,20 @@ describe('LibRedisAdapter', () => {
   let libRedisAdapter = null;
   let specRedisInstance = null;
   const SpecRedisInstanceName = 'SpecRedisInstance';
+  const keysToCleanUp = [];
+
+  const REDIS_OK_RESULT = 'OK';
 
   const LibRedisAdapterConfig = Object.freeze({
     host: '127.0.0.1',
     port: 6379,
   });
+
+  const cleanUpData = async () => {
+    if (keysToCleanUp.length > 0) {
+      await specRedisInstance.rawCallAsync(['DEL', ...keysToCleanUp]);
+    }
+  };
 
   before(async () => {
     libRedisAdapter = new LibRedisAdapter();
@@ -36,6 +45,8 @@ describe('LibRedisAdapter', () => {
   });
 
   after(async () => {
+    await cleanUpData();
+
     libRedisAdapter.shutDownInstance(specRedisInstance);
 
     specRedisInstance = null;
@@ -45,7 +56,7 @@ describe('LibRedisAdapter', () => {
     libRedisAdapter = null;
   });
 
-  it.only('should newInstance and shutDownInstance', async () => {
+  it('should newInstance and shutDownInstance', async () => {
     const redisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, nanoid(5));
 
     expect(redisInstance).to.exist;
@@ -54,5 +65,38 @@ describe('LibRedisAdapter', () => {
     libRedisAdapter.shutDownInstance(redisInstance);
 
     expect(redisInstance.destroyed).to.be.true;
+  });
+
+  it('should store an Account Token data to Redis', async () => {
+    const redisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, nanoid(5));
+
+    const identifier = `AT:${nanoid(64)}`;
+    const uid = nanoid(32);
+    const secretKey = nanoid(256);
+
+    const FLAG_0 = 0x1;
+    // eslint-disable-next-line no-unused-vars
+    const FLAG_1 = 0x2;
+    const FLAG_2 = 0x4;
+
+    const FLAGS = FLAG_0 | FLAG_2;
+
+    keysToCleanUp.push(identifier);
+
+    const result = await redisInstance.rawCallAsync(['HMSET', identifier, 'UID', uid, 'SK', secretKey, 'FLAGS', FLAGS]);
+
+    expect(result).to.equal(REDIS_OK_RESULT);
+
+    const [retrievedSecretKey, retrievedFlags] = await redisInstance.rawCallAsync(['HMGET', identifier, 'SK', 'FLAGS']);
+
+    expect(retrievedSecretKey).to.equal(secretKey);
+    expect(retrievedFlags).to.equal(FLAGS.toString());
+
+    const retrievedFlagsAsInt = parseInt(retrievedFlags, 16);
+
+    expect(Boolean(retrievedFlagsAsInt & FLAG_0)).to.be.true; // FLAG_0 is set
+    expect(Boolean(retrievedFlagsAsInt & FLAG_2)).to.be.true; // FLAG_2 is set
+
+    libRedisAdapter.shutDownInstance(redisInstance);
   });
 });

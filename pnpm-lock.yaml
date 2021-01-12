@@ -44,6 +44,7 @@ importers:
       redis-fast-driver: ^2.1.5
   sources/back-end/libs/LibTokenServer:
     dependencies:
+      '@dmitry-n-medvedev/libredisadapter': link:../../LibRedisAdapter
       '@dmitry-n-medvedev/libtoken': link:../libToken
       libsodium-wrappers: 0.7.8
       macaroons.js: 0.3.9
@@ -62,6 +63,7 @@ importers:
       nanoid: 3.1.20
       node-fetch: 2.6.1
     specifiers:
+      '@dmitry-n-medvedev/libredisadapter': workspace:^0.0.0
       '@dmitry-n-medvedev/libtoken': workspace:^0.0.0
       c8: ^7.4.0
       chai: ^4.2.0

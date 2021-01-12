@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    mocha: true,
   },
   extends: [
     'airbnb-base',
@@ -86,8 +87,16 @@ module.exports = {
       {
         allow: [
           '&',
+          '|',
         ],
       },
     ],
+    'no-unused-vars': ['error', {
+      vars: 'all',
+      args: 'after-used',
+      ignoreRestSiblings: false,
+      varsIgnorePattern: 'debuglog',
+    }],
+    'no-restricted-syntax': 0,
   },
 };
