@@ -5,7 +5,7 @@ node_js:
   - 15.5.1
 os: linux
 before_install:
-  - curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=5.14.3 node
+  - curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=5.15.0 node
   - pnpm config set store-dir ~/.pnpm-store
 install:
   - pnpm --recursive install
