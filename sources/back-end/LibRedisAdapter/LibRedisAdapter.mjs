@@ -59,23 +59,30 @@ export class LibRedisAdapter {
   }
 
   async destroy() {
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const instance of this.#instances) {
+    for await (const redisInstance of this.#instances) {
       try {
-        await this.shutDownInstance(instance);
+        debuglog(`shutting down ${redisInstance[Symbol.for(SYMBOL_NAME)]} redis instance`);
+
+        await this.shutDownInstance(redisInstance);
       } catch (anyError) {
         debuglog(anyError.message);
       }
     }
+
+    this.#instances = null;
   }
 
-  async newInstance(config = null) {
+  async newInstance(config = null, clientName = null) {
     if (config === null) {
       throw new ReferenceError('config is undefined');
     }
 
     if (Object.keys(config).length === 0) {
       throw new TypeError('config is empty');
+    }
+
+    if (clientName === null) {
+      clientName = nanoid(5);
     }
 
     const redisInstance = new Redis({
@@ -88,6 +95,8 @@ export class LibRedisAdapter {
     redisInstance[Symbol.for(SYMBOL_NAME)] = Object.freeze({
       id: nanoid(8),
     });
+
+    await redisInstance.rawCallAsync(['CLIENT', 'SETNAME', clientName]);
 
     this.#instances.set((redisInstance[Symbol.for(SYMBOL_NAME)]).id, redisInstance);
 
