@@ -31,6 +31,9 @@ import {
 import {
   resolveTokenIdentifierName,
 } from './helpers/resolveTokenIdentifierName.mjs';
+import {
+  validateAction,
+} from './authz/validateAction.mjs';
 
 export class LibTokenServer {
   #libsodium = null;
@@ -137,6 +140,9 @@ export class LibTokenServer {
     const { identifier } = this.#macaroonsBuilder.deserialize(serializedAccountToken);
 
     const uid = this.#resolveUidByAccountTokenIdentifier(identifier);
+
+    const validatedAction = validateAction(uid, forAction);
+
     const accessTokenIdentifier = resolveTokenIdentifierName(RedisTokenTypes.ACCESS_TOKEN, createRandomString(this.#libsodium));
     const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
     const tokenSettings = {
@@ -165,7 +171,7 @@ export class LibTokenServer {
         await this.#redisInstanceWriter.rawCallAsync(['PEXPIRE', identifier, (this.#config.ttl.accessToken * 2)]);
         return this.#redisInstanceWriter.rawCallAsync(['EXEC']);
       },
-      createAccessToken(this.#macaroonsBuilder, tokenSettings, ttl, forAction),
+      createAccessToken(this.#macaroonsBuilder, tokenSettings, ttl, validatedAction),
     ]))[1] ?? null;
   }
 }
