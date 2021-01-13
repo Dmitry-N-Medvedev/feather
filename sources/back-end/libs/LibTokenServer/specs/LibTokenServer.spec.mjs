@@ -9,6 +9,9 @@ import {
   ActionTypes,
 } from '@dmitry-n-medvedev/libtoken/constants/ActionTypes.mjs';
 import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   LibTokenServer,
 } from '../LibTokenServer.mjs';
 
@@ -26,10 +29,6 @@ const {
 describe('LibTokenServer', () => {
   const LibTokenServerConfig = Object.freeze({
     ctx: 'featheri',
-    locations: {
-      'https://feather-insurance.com/': 0x1,
-      'https://file-server.feather-insurance.com/': 0x2,
-    },
     redis: {
       host: '127.0.0.1',
       port: 6379,
@@ -110,7 +109,7 @@ describe('LibTokenServer', () => {
       object: '/questionnaire.json',
     });
     const serializedAccountToken = await libTokenServer.issueAccountToken();
-    const serializedAccessToken = await libTokenServer.issueAccessToken(forAction, serializedAccountToken);
+    const serializedAccessToken = await libTokenServer.issueAccessToken(forAction, serializedAccountToken, Locations.FILE_SERVER);
 
     expect(serializedAccessToken).to.exist;
 

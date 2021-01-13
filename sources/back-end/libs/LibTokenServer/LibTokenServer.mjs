@@ -17,6 +17,9 @@ import {
   LibRedisAdapter,
 } from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
 import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   RedisTokenTypes,
 } from './constants/RedisTokenTypes.mjs';
 import {
@@ -96,8 +99,7 @@ export class LibTokenServer {
     const uid = createRandomString(this.#libsodium);
     const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
     const tokenSettings = {
-      // FIXME: this should be a param
-      location: this.#config.locations['https://feather-insurance.com/'],
+      location: Locations.TOKEN_SERVER,
       secretKey,
       identifier,
       uid,
@@ -128,7 +130,7 @@ export class LibTokenServer {
     return this.#redisInstanceWriter.rawCallAsync(['HGET', accountTokenIdentifier, RedisAccountTokenFields.USER_ID]);
   }
 
-  async issueAccessToken(forAction = null, serializedAccountToken = null) {
+  async issueAccessToken(forAction = null, serializedAccountToken = null, location = null) {
     if (forAction === null) {
       throw new ReferenceError('forAction is undefined');
     }
@@ -146,8 +148,7 @@ export class LibTokenServer {
     const accessTokenIdentifier = resolveTokenIdentifierName(RedisTokenTypes.ACCESS_TOKEN, createRandomString(this.#libsodium));
     const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
     const tokenSettings = {
-      // FIXME: this should be a param
-      location: this.#config.locations['https://file-server.feather-insurance.com/'],
+      location: (location ?? Locations.INVALID_LOCATION),
       secretKey,
       identifier: accessTokenIdentifier,
       uid,

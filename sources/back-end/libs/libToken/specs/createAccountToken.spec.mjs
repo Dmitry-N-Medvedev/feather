@@ -6,6 +6,9 @@ import {
   nanoid,
 } from 'nanoid';
 import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   createAccountToken,
 } from '../createAccountToken.mjs';
 import {
@@ -31,9 +34,6 @@ describe('AccountToken', () => {
   let libsodium = null;
   let masterKey = null;
   const ctx = nanoid(8);
-  const locations = Object.freeze({
-    'https://feather-insurance.com/': '0',
-  });
 
   before(async () => {
     await _sodium.ready;
@@ -48,7 +48,6 @@ describe('AccountToken', () => {
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
     const tokenSettings = {
-      location: locations['https://feather-insurance.com/'],
       secretKey,
       identifier,
       uid,
@@ -62,11 +61,12 @@ describe('AccountToken', () => {
     const {
       MacaroonsBuilder,
     } = macaroons;
+    const expectedLocation = Locations.TOKEN_SERVER.toString();
     const accountToken = await createAccountToken(MacaroonsBuilder, tokenSettings);
     const deserializedAccountToken = MacaroonsBuilder.deserialize(accountToken);
 
     expect(deserializedAccountToken.identifier).to.equal(identifier);
-    expect(deserializedAccountToken.location).to.equal(tokenSettings.location);
+    expect(deserializedAccountToken.location).to.equal(expectedLocation);
 
     const resolvedUid = (db[deserializedAccountToken.identifier]).uid ?? null;
     const resolvedSecretKey = (db[deserializedAccountToken.identifier]).secretKey ?? null;

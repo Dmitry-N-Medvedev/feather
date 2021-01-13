@@ -22,8 +22,9 @@
   "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@dmitry-n-medvedev/libtoken": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libcommon": "workspace:^0.0.0",
     "@dmitry-n-medvedev/libredisadapter": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libtoken": "workspace:^0.0.0",
     "libsodium-wrappers": "^0.7.8",
     "macaroons.js": "^0.3.9"
   },

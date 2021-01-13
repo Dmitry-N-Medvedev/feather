@@ -1,6 +1,11 @@
 import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   CaveatPrefixes,
 } from './constants/CaveatPrefixes.mjs';
+
+const PREDEFINED_LOCATION = Locations.TOKEN_SERVER.toString();
 
 export const createAccountToken = async (MacaroonBuilder = null, settings = {}) => {
   if (MacaroonBuilder === null) {
@@ -13,13 +18,12 @@ export const createAccountToken = async (MacaroonBuilder = null, settings = {}) 
   }
 
   const {
-    location,
     secretKey,
     identifier,
     uid,
   } = settings;
 
-  const result = MacaroonBuilder.create(location.toString(), secretKey, identifier);
+  const result = MacaroonBuilder.create(PREDEFINED_LOCATION, secretKey, identifier);
 
   return MacaroonBuilder
     .modify(result)
