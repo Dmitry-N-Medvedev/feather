@@ -17,6 +17,8 @@ const {
   expect,
 } = chai;
 
+// FIXME: remove this line when code is ready to have it merged automatically on github
+
 describe('LibFileServer', () => {
   it.only('should start/stop the LibFileServer', async () => {
     const LibFileServerConfig = Object.freeze({
