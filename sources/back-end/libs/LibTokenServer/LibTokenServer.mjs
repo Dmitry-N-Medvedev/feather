@@ -28,6 +28,9 @@ import {
 import {
   RedisAccountTokenFlags,
 } from './constants/RedisAccountTokenFlags.mjs';
+import {
+  resolveTokenIdentifierName,
+} from './helpers/resolveTokenIdentifierName.mjs';
 
 export class LibTokenServer {
   #libsodium = null;
@@ -86,10 +89,11 @@ export class LibTokenServer {
 
   // eslint-disable-next-line class-methods-use-this
   async issueAccountToken() {
-    const identifier = `${RedisTokenTypes.ACCOUNT_TOKEN}:${createRandomString(this.#libsodium)}`;
+    const identifier = resolveTokenIdentifierName(RedisTokenTypes.ACCOUNT_TOKEN, createRandomString(this.#libsodium));
     const uid = createRandomString(this.#libsodium);
     const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
     const tokenSettings = {
+      // FIXME: this should be a param
       location: this.#config.locations['https://feather-insurance.com/'],
       secretKey,
       identifier,
@@ -112,6 +116,15 @@ export class LibTokenServer {
     ]))[1] ?? null;
   }
 
+  // eslint-disable-next-line func-names
+  async #resolveUidByAccountTokenIdentifier (accountTokenIdentifier = null) {
+    if (accountTokenIdentifier === null) {
+      throw new ReferenceError('accountTokenIdentifier is undefined');
+    }
+
+    return this.#redisInstanceWriter.rawCallAsync(['HGET', accountTokenIdentifier, RedisAccountTokenFields.USER_ID]);
+  }
+
   async issueAccessToken(forAction = null, serializedAccountToken = null) {
     if (forAction === null) {
       throw new ReferenceError('forAction is undefined');
@@ -123,10 +136,11 @@ export class LibTokenServer {
 
     const { identifier } = this.#macaroonsBuilder.deserialize(serializedAccountToken);
 
-    const uid = await this.#redisInstanceWriter.rawCallAsync(['HGET', identifier, RedisAccountTokenFields.USER_ID]);
-    const accessTokenIdentifier = `${RedisTokenTypes.ACCESS_TOKEN}:${createRandomString(this.#libsodium)}`;
+    const uid = this.#resolveUidByAccountTokenIdentifier(identifier);
+    const accessTokenIdentifier = resolveTokenIdentifierName(RedisTokenTypes.ACCESS_TOKEN, createRandomString(this.#libsodium));
     const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
     const tokenSettings = {
+      // FIXME: this should be a param
       location: this.#config.locations['https://file-server.feather-insurance.com/'],
       secretKey,
       identifier: accessTokenIdentifier,
