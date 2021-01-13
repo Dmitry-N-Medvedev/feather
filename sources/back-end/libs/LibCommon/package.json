@@ -1,7 +1,7 @@
 {
-  "name": "@dmitry-n-medvedev/libtoken",
+  "name": "@dmitry-n-medvedev/libcommon",
   "version": "0.0.0",
-  "description": "[lib] token related functionality",
+  "description": "[lib] shared stuff",
   "engines": {
     "node": "=15.5.1",
     "pnpm": "=5.15.0"
@@ -13,19 +13,15 @@
   "type": "module",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./ --ext .mjs",
-    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=libtoken ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
+    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=LibCommon,specs ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
     "coverage": "./node_modules/.bin/c8 report --reporter=text-lcov > ./coverage/coverage.lcov && ./node_modules/.bin/codecov --disable=gcov"
   },
   "keywords": [
-    "libtoken"
+    "libcommon"
   ],
   "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "@dmitry-n-medvedev/libcommon": "workspace:^0.0.0",
-    "libsodium-wrappers": "^0.7.8",
-    "macaroons.js": "^0.3.9"
-  },
+  "dependencies": {},
   "devDependencies": {
     "c8": "^7.4.0",
     "chai": "^4.2.0",

@@ -6,6 +6,9 @@ import {
   nanoid,
 } from 'nanoid';
 import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   createAccessToken,
 } from '../createAccessToken.mjs';
 import {
@@ -34,9 +37,6 @@ describe('AccessToken', () => {
   let libsodium = null;
   let masterKey = null;
   const ctx = nanoid(8);
-  const locations = Object.freeze({
-    'https://feather-insurance.com/': '0',
-  });
 
   before(async () => {
     await _sodium.ready;
@@ -50,7 +50,7 @@ describe('AccessToken', () => {
     const uid = createRandomString(libsodium);
     const secretKey = deriveSubKey(libsodium, ctx, masterKey);
     const tokenSettings = {
-      location: locations['https://feather-insurance.com/'],
+      location: Locations.FILE_SERVER,
       secretKey,
       identifier,
       uid,
