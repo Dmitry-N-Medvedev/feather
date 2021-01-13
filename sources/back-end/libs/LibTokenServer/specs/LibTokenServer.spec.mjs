@@ -111,10 +111,10 @@ describe('LibTokenServer', () => {
     });
     const serializedAccountToken = await libTokenServer.issueAccountToken();
     const serializedAccessToken = await libTokenServer.issueAccessToken(forAction, serializedAccountToken);
+
+    expect(serializedAccessToken).to.exist;
+
     const deserializedAccessToken = MacaroonsBuilder.deserialize(serializedAccessToken);
-
-    expect(deserializedAccessToken).to.exist;
-
     const {
       identifier,
     } = deserializedAccessToken;
