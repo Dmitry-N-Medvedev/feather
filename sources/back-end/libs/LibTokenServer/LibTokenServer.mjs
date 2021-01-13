@@ -11,6 +11,9 @@ import {
   createAccountToken,
 } from '@dmitry-n-medvedev/libtoken/createAccountToken.mjs';
 import {
+  createAccessToken,
+} from '@dmitry-n-medvedev/libtoken//createAccessToken.mjs';
+import {
   LibRedisAdapter,
 } from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
 import {
@@ -19,6 +22,9 @@ import {
 import {
   RedisAccountTokenFields,
 } from './constants/RedisAccountTokenFields.mjs';
+import {
+  RedisAccessTokenFields,
+} from './constants/RedisAccessTokenFields.mjs';
 import {
   RedisAccountTokenFlags,
 } from './constants/RedisAccountTokenFlags.mjs';
@@ -103,6 +109,49 @@ export class LibTokenServer {
         FLAGS,
       ]),
       createAccountToken(this.#macaroonsBuilder, tokenSettings),
+    ]))[1] ?? null;
+  }
+
+  async issueAccessToken(forAction = null, serializedAccountToken = null) {
+    if (forAction === null) {
+      throw new ReferenceError('forAction is undefined');
+    }
+
+    if (serializedAccountToken === null) {
+      throw new ReferenceError('serializedAccountToken is undefined');
+    }
+
+    const { identifier } = this.#macaroonsBuilder.deserialize(serializedAccountToken);
+
+    const uid = await this.#redisInstanceWriter.rawCallAsync(['HGET', identifier, RedisAccountTokenFields.USER_ID]);
+    const accessTokenIdentifier = `${RedisTokenTypes.ACCESS_TOKEN}:${createRandomString(this.#libsodium)}`;
+    const secretKey = deriveSubKey(this.#libsodium, this.#config.ctx, this.#masterKey);
+    const tokenSettings = {
+      location: this.#config.locations['https://file-server.feather-insurance.com/'],
+      secretKey,
+      identifier: accessTokenIdentifier,
+      uid,
+    };
+    const ttl = Object.freeze({
+      from: Date.now(),
+      upto: Date.now() + this.#config.ttl.accessToken,
+    });
+
+    return (await Promise.all([
+      async () => {
+        await this.#redisInstanceWriter.rawCallAsync(['MULTI']);
+        await this.#redisInstanceWriter.rawCallAsync([
+          'HMSET',
+          accessTokenIdentifier,
+          RedisAccessTokenFields.USER_ID,
+          uid,
+          RedisAccessTokenFields.SECRET_KEY,
+          secretKey,
+        ]);
+        await this.#redisInstanceWriter.rawCallAsync(['PEXPIRE', identifier, (this.#config.ttl.accessToken * 2)]);
+        return this.#redisInstanceWriter.rawCallAsync(['EXEC']);
+      },
+      createAccessToken(this.#macaroonsBuilder, tokenSettings, ttl, forAction),
     ]))[1] ?? null;
   }
 }

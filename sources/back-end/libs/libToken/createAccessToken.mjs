@@ -15,7 +15,7 @@ export const createAccessToken = async (MacaroonBuilder = null, settings = {}, t
     throw new ReferenceError('action is undefined');
   }
 
-  // TODO: use ajv: https://github.com/ajv-validator/ajv
+  // FIXME: use ajv: https://github.com/ajv-validator/ajv
   if (Object.keys(settings).length === 0) {
     throw new Error('settings are empty');
   }
@@ -27,7 +27,7 @@ export const createAccessToken = async (MacaroonBuilder = null, settings = {}, t
     uid,
   } = settings;
 
-  const result = MacaroonBuilder.create(location, secretKey, identifier);
+  const result = MacaroonBuilder.create(location.toString(), secretKey, identifier);
 
   return MacaroonBuilder
     .modify(result)

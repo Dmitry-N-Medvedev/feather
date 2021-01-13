@@ -6,6 +6,9 @@ import {
   LibRedisAdapter,
 } from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
 import {
+  ActionTypes,
+} from '@dmitry-n-medvedev/libtoken/constants/ActionTypes.mjs';
+import {
   LibTokenServer,
 } from '../LibTokenServer.mjs';
 
@@ -24,11 +27,15 @@ describe('LibTokenServer', () => {
   const LibTokenServerConfig = Object.freeze({
     ctx: 'featheri',
     locations: {
-      'https://feather-insurance.com/': 0,
+      'https://feather-insurance.com/': 0x1,
+      'https://file-server.feather-insurance.com/': 0x2,
     },
     redis: {
       host: '127.0.0.1',
       port: 6379,
+    },
+    ttl: {
+      accessToken: 500,
     },
   });
   let libTokenServer = null;
@@ -39,6 +46,10 @@ describe('LibTokenServer', () => {
     port: 6379,
   });
   let specRedisInstance = null;
+  const {
+    MacaroonsBuilder,
+  } = macaroons;
+
   const keysToDelete = [];
 
   const deleteKeys = async () => {
@@ -80,9 +91,6 @@ describe('LibTokenServer', () => {
 
     expect(serializedAccountToken.length > 0).to.be.true;
 
-    const {
-      MacaroonsBuilder,
-    } = macaroons;
     const deserializedAccountToken = MacaroonsBuilder.deserialize(serializedAccountToken);
 
     expect(deserializedAccountToken).to.exist;
@@ -92,6 +100,24 @@ describe('LibTokenServer', () => {
     } = deserializedAccountToken;
 
     expect(identifier).to.exist;
+
+    keysToDelete.push(identifier);
+  });
+
+  it('should issueAccessToken', async () => {
+    const forAction = Object.freeze({
+      type: ActionTypes.READ,
+      object: '/questionnaire.json',
+    });
+    const serializedAccountToken = await libTokenServer.issueAccountToken();
+    const serializedAccessToken = await libTokenServer.issueAccessToken(forAction, serializedAccountToken);
+    const deserializedAccessToken = MacaroonsBuilder.deserialize(serializedAccessToken);
+
+    expect(deserializedAccessToken).to.exist;
+
+    const {
+      identifier,
+    } = deserializedAccessToken;
 
     keysToDelete.push(identifier);
   });
