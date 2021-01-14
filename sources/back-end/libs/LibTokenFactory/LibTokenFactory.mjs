@@ -150,7 +150,6 @@ export class LibTokenFactory {
       RedisAccessTokenFields.SECRET_KEY.toString(),
       Buffer.from(secretKey).toString(BufferToStringEncoding),
     ]);
-    // FIXME: uncomment the following line
     await this.#redisInstanceWriter.rawCallAsync(['PEXPIRE', accessTokenIdentifier, (this.#config.ttl.accessToken * 2)]);
     return this.#redisInstanceWriter.rawCallAsync(['EXEC']);
   }
