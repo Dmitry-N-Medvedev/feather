@@ -11,7 +11,7 @@ import {
   LibFileIndex,
 } from '../LibFileIndex.mjs';
 
-const debuglog = util.debuglog('LibFileServer:specs');
+const debuglog = util.debuglog('LibFileIndex:specs');
 const {
   describe,
   before,

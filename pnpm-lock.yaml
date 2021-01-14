@@ -41,7 +41,7 @@ importers:
       mocha: ^8.2.1
       nanoid: ^3.1.20
       node-fetch: ^2.6.1
-  sources/back-end/libs/LibFileServer:
+  sources/back-end/libs/LibFileIndex:
     dependencies:
       '@dmitry-n-medvedev/libcommon': link:../LibCommon
       '@dmitry-n-medvedev/libredisadapter': link:../LibRedisAdapter

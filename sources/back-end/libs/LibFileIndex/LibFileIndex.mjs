@@ -25,7 +25,7 @@ export class LibFileIndex {
       throw new TypeError('config.cwd is undefined');
     }
 
-    this.#debuglog = util.debuglog('LibFileServer');
+    this.#debuglog = util.debuglog('LibFileIndex');
     this.#fileList = new Set();
 
     this.#config = Object.freeze({ ...config });
