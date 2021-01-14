@@ -13,7 +13,7 @@
   "main": "./LibFileServer.mjs",
   "type": "module",
   "files": [
-    "./LibFileServer.mjs"
+    "./LibFileIndex.mjs"
   ],
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./ --ext .mjs",

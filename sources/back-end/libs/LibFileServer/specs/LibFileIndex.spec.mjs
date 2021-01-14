@@ -5,8 +5,8 @@ import {
   resolve,
 } from 'path';
 import {
-  LibFileServer,
-} from '../LibFileServer.mjs';
+  LibFileIndex,
+} from '../LibFileIndex.mjs';
 
 const debuglog = util.debuglog('LibFileServer:specs');
 const {
@@ -20,18 +20,18 @@ const {
 // FIXME: remove this line when code is ready to have it merged automatically on github
 
 describe('LibFileServer', () => {
-  it.only('should start/stop the LibFileServer', async () => {
-    const LibFileServerConfig = Object.freeze({
+  it.only('should start/stop the LibFileIndex', async () => {
+    const LibFileIndexConfig = Object.freeze({
       cwd: resolve(process.cwd(), './specs/cwd'),
     });
-    const libFileServer = new LibFileServer(LibFileServerConfig);
+    const libFileIndex = new LibFileIndex(LibFileIndexConfig);
 
-    expect(libFileServer).to.exist;
+    expect(libFileIndex).to.exist;
 
-    await libFileServer.start();
+    await libFileIndex.start();
 
-    expect(libFileServer.files).is.frozen;
+    expect(libFileIndex.files).is.frozen;
 
-    await libFileServer.stop();
+    await libFileIndex.stop();
   });
 });
