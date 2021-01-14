@@ -74,7 +74,7 @@ describe('LibAuthServer', () => {
     accountToken = null;
   });
 
-  it.only('should issue a GET request w/ an AccessToken', async () => {
+  it('should issue a GET request w/ an AccessToken', async () => {
     const filePath = `${nanoid(16)}.${nanoid(3)}`;
     const forAction = Object.freeze({
       type: ActionTypes.READ,
