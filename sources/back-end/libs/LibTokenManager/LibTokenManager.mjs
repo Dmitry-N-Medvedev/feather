@@ -38,7 +38,7 @@ import {
   validateAction,
 } from './authz/validateAction.mjs';
 
-export class LibTokenServer {
+export class LibTokenManager {
   #libsodium = null;
   #config = null;
   #masterKey = null;
@@ -54,7 +54,7 @@ export class LibTokenServer {
       throw new ReferenceError('config is undefined');
     }
 
-    this.#debuglog = util.debuglog('LibTokenServer');
+    this.#debuglog = util.debuglog('LibTokenManager');
 
     this.#config = Object.freeze({ ...config });
     this.#libRedisAdapter = new LibRedisAdapter();

@@ -113,7 +113,7 @@ importers:
       nanoid: ^3.1.20
       node-fetch: ^2.6.1
       redis-fast-driver: ^2.1.5
-  sources/back-end/libs/LibTokenServer:
+  sources/back-end/libs/LibTokenManager:
     dependencies:
       '@dmitry-n-medvedev/libcommon': link:../LibCommon
       '@dmitry-n-medvedev/libredisadapter': link:../LibRedisAdapter
