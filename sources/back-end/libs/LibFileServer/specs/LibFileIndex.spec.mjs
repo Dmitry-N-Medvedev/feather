@@ -2,6 +2,9 @@ import mocha from 'mocha';
 import chai from 'chai';
 import util from 'util';
 import {
+  nanoid,
+} from 'nanoid';
+import {
   resolve,
 } from 'path';
 import {
@@ -11,6 +14,8 @@ import {
 const debuglog = util.debuglog('LibFileServer:specs');
 const {
   describe,
+  before,
+  after,
   it,
 } = mocha;
 const {
@@ -20,18 +25,36 @@ const {
 // FIXME: remove this line when code is ready to have it merged automatically on github
 
 describe('LibFileServer', () => {
-  it.only('should start/stop the LibFileIndex', async () => {
-    const LibFileIndexConfig = Object.freeze({
-      cwd: resolve(process.cwd(), './specs/cwd'),
-    });
-    const libFileIndex = new LibFileIndex(LibFileIndexConfig);
+  const LibFileIndexConfig = Object.freeze({
+    cwd: resolve(process.cwd(), './specs/cwd'),
+  });
+  let libFileIndex = null;
 
-    expect(libFileIndex).to.exist;
+  before(async () => {
+    libFileIndex = new LibFileIndex(LibFileIndexConfig);
 
-    await libFileIndex.start();
+    return libFileIndex.start();
+  });
 
-    expect(libFileIndex.files).is.frozen;
-
+  after(async () => {
     await libFileIndex.stop();
+  });
+
+  it('should start/stop the LibFileIndex', async () => {
+    expect(libFileIndex.files).is.frozen;
+  });
+
+  it('should verify if a file does exist', async () => {
+    const relativeFilePath = '/questionnaire.json';
+    const fileExists = await libFileIndex.fileExists(relativeFilePath);
+
+    expect(fileExists).to.be.true;
+  });
+
+  it('fileExists should return false if a file does not exist', async () => {
+    const relativeFilePath = `/${nanoid(5)}.${nanoid(3)}`;
+    const fileExists = await libFileIndex.fileExists(relativeFilePath);
+
+    expect(fileExists).to.be.false;
   });
 });
