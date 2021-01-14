@@ -1,0 +1,71 @@
+{
+  "name": "@dmitry-n-medvedev/libauthserver",
+  "version": "0.0.0",
+  "description": "[lib] auth server implementation",
+  "engines": {
+    "node": "=15.5.1",
+    "pnpm": "=5.15.1"
+  },
+  "engineStrict": true,
+  "volta": {
+    "node": "15.5.1"
+  },
+  "type": "module",
+  "main": "./LibAuthServer.mjs",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ./ --ext .mjs",
+    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=LibAuthServer*,LibTokenFactory* ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
+    "coverage": "./node_modules/.bin/c8 report --reporter=text-lcov > ./coverage/coverage.lcov && ./node_modules/.bin/codecov --disable=gcov"
+  },
+  "keywords": [
+    "LibAuthServer"
+  ],
+  "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@dmitry-n-medvedev/libcommon": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libredisadapter": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libtoken": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libtokenfactory": "workspace:^0.0.0",
+    "macaroons.js": "^0.3.9"
+  },
+  "devDependencies": {
+    "c8": "^7.4.0",
+    "chai": "^4.2.0",
+    "codecov": "^3.8.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.17.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-chai-friendly": "^0.6.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "got": "^11.8.1",
+    "mocha": "^8.2.1",
+    "nanoid": "^3.1.20",
+    "node-fetch": "^2.6.1",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v18.14.0"
+  },
+  "mocha": {
+    "allow-uncaught": false,
+    "async-only": true,
+    "bail": true,
+    "check-leaks": true,
+    "exit": true,
+    "forbid-only": false,
+    "forbid-pending": true,
+    "slow": 50,
+    "timeout": 1000,
+    "color": true,
+    "diff": true,
+    "full-trace": true,
+    "growl": false,
+    "inline-diffs": true,
+    "reporter": "spec",
+    "no-config": true,
+    "no-opts": true,
+    "spec": [
+      "**/specs/*.mjs"
+    ]
+  }
+}

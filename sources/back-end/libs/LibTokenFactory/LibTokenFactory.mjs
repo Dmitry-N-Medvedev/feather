@@ -12,7 +12,7 @@ import {
 } from '@dmitry-n-medvedev/libtoken/createAccountToken.mjs';
 import {
   createAccessToken,
-} from '@dmitry-n-medvedev/libtoken//createAccessToken.mjs';
+} from '@dmitry-n-medvedev/libtoken/createAccessToken.mjs';
 import {
   LibRedisAdapter,
 } from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
@@ -21,16 +21,22 @@ import {
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
 import {
   RedisTokenTypes,
-} from './constants/RedisTokenTypes.mjs';
+} from '@dmitry-n-medvedev/libcommon/constants/RedisTokenTypes.mjs';
 import {
   RedisAccountTokenFields,
-} from './constants/RedisAccountTokenFields.mjs';
+} from '@dmitry-n-medvedev/libcommon/constants/RedisAccountTokenFields.mjs';
 import {
   RedisAccessTokenFields,
-} from './constants/RedisAccessTokenFields.mjs';
+} from '@dmitry-n-medvedev/libcommon/constants/RedisAccessTokenFields.mjs';
 import {
   RedisAccountTokenFlags,
-} from './constants/RedisAccountTokenFlags.mjs';
+} from '@dmitry-n-medvedev/libcommon/constants/RedisAccountTokenFlags.mjs';
+import {
+  resolveUidByAccountTokenIdentifier,
+} from '@dmitry-n-medvedev/libcommon/helpers/redis/resolveUidByAccountTokenIdentifier.mjs';
+import {
+  BufferToStringEncoding,
+} from '@dmitry-n-medvedev/libcommon/constants/BufferToStringEncoding.mjs';
 import {
   resolveTokenIdentifierName,
 } from './helpers/resolveTokenIdentifierName.mjs';
@@ -108,7 +114,7 @@ export class LibTokenFactory {
 
     return (await Promise.all([
       this.#redisInstanceWriter.rawCallAsync([
-        'HMSET',
+        'HSET',
         identifier,
         RedisAccountTokenFields.USER_ID,
         uid,
@@ -122,12 +128,31 @@ export class LibTokenFactory {
   }
 
   // eslint-disable-next-line func-names
-  async #resolveUidByAccountTokenIdentifier (accountTokenIdentifier = null) {
-    if (accountTokenIdentifier === null) {
-      throw new ReferenceError('accountTokenIdentifier is undefined');
+  async #saveAccessToken (accessTokenIdentifier = null, uid = null, secretKey = null) {
+    if (accessTokenIdentifier === null) {
+      throw new ReferenceError('accessTokenIdentifier is undefined');
     }
 
-    return this.#redisInstanceWriter.rawCallAsync(['HGET', accountTokenIdentifier, RedisAccountTokenFields.USER_ID]);
+    if (uid === null) {
+      throw new ReferenceError('uid is undefined');
+    }
+
+    if (secretKey === null) {
+      throw new ReferenceError('secretKey is undefined');
+    }
+
+    await this.#redisInstanceWriter.rawCallAsync(['MULTI']);
+    await this.#redisInstanceWriter.rawCallAsync([
+      'HSET',
+      accessTokenIdentifier,
+      RedisAccessTokenFields.USER_ID.toString(),
+      uid,
+      RedisAccessTokenFields.SECRET_KEY.toString(),
+      Buffer.from(secretKey).toString(BufferToStringEncoding),
+    ]);
+    // FIXME: uncomment the following line
+    // await this.#redisInstanceWriter.rawCallAsync(['PEXPIRE', identifier, (this.#config.ttl.accessToken * 2)]);
+    return this.#redisInstanceWriter.rawCallAsync(['EXEC']);
   }
 
   async issueAccessToken(forAction = null, serializedAccountToken = null, location = null) {
@@ -141,7 +166,7 @@ export class LibTokenFactory {
 
     const { identifier } = this.#macaroonsBuilder.deserialize(serializedAccountToken);
 
-    const uid = this.#resolveUidByAccountTokenIdentifier(identifier);
+    const uid = await resolveUidByAccountTokenIdentifier(identifier, this.#redisInstanceWriter, RedisAccountTokenFields.USER_ID);
 
     const validatedAction = validateAction(uid, forAction);
 
@@ -159,19 +184,7 @@ export class LibTokenFactory {
     });
 
     return (await Promise.all([
-      async () => {
-        await this.#redisInstanceWriter.rawCallAsync(['MULTI']);
-        await this.#redisInstanceWriter.rawCallAsync([
-          'HMSET',
-          accessTokenIdentifier,
-          RedisAccessTokenFields.USER_ID,
-          uid,
-          RedisAccessTokenFields.SECRET_KEY,
-          secretKey,
-        ]);
-        await this.#redisInstanceWriter.rawCallAsync(['PEXPIRE', identifier, (this.#config.ttl.accessToken * 2)]);
-        return this.#redisInstanceWriter.rawCallAsync(['EXEC']);
-      },
+      this.#saveAccessToken(accessTokenIdentifier, uid, secretKey),
       createAccessToken(this.#macaroonsBuilder, tokenSettings, ttl, validatedAction),
     ]))[1] ?? null;
   }

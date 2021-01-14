@@ -25,8 +25,6 @@ describe('LibRedisAdapter', () => {
   const SpecRedisInstanceName = 'SpecRedisInstance';
   const keysToCleanUp = [];
 
-  const REDIS_OK_RESULT = 'OK';
-
   const LibRedisAdapterConfig = Object.freeze({
     host: '127.0.0.1',
     port: 6379,
@@ -78,14 +76,15 @@ describe('LibRedisAdapter', () => {
     // eslint-disable-next-line no-unused-vars
     const FLAG_1 = 0x2;
     const FLAG_2 = 0x4;
-
     const FLAGS = FLAG_0 | FLAG_2;
+
+    const parameters = Object.freeze(['UID', uid, 'SK', secretKey, 'FLAGS', FLAGS]);
 
     keysToCleanUp.push(identifier);
 
-    const result = await redisInstance.rawCallAsync(['HMSET', identifier, 'UID', uid, 'SK', secretKey, 'FLAGS', FLAGS]);
+    const result = await redisInstance.rawCallAsync(['HSET', identifier, ...parameters]);
 
-    expect(result).to.equal(REDIS_OK_RESULT);
+    expect(result).to.equal((parameters.length / 2));
 
     const [retrievedSecretKey, retrievedFlags] = await redisInstance.rawCallAsync(['HMGET', identifier, 'SK', 'FLAGS']);
 

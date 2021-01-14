@@ -19,7 +19,7 @@ export const TimescopeVerifier = (caveat = null) => {
       upto,
     } = match.groups;
 
-    return from < Date.now() < upto;
+    return from <= Date.now() <= upto;
   }
 
   return false;
