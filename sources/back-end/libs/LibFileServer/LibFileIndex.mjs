@@ -57,7 +57,11 @@ export class LibFileIndex {
       throw new ReferenceError('workingDirectory is undefined');
     }
 
-    // FIXME: check to see if workingDirectory isDirectory()
+    const stat = await fs.promises.stat(workingDirectory);
+
+    if (stat.isFile() === true) {
+      throw new TypeError(`${workingDirectory} is not a directory`);
+    }
 
     const files = await fs.promises.readdir(workingDirectory, { withFileTypes: true });
 
@@ -85,5 +89,31 @@ export class LibFileIndex {
     this.#fileList = null;
     this.#config = null;
     this.#debuglog = null;
+  }
+
+  async fileExists(relativeFilePath = null) {
+    if (relativeFilePath === null) {
+      throw new ReferenceError('relativeFilePath is undefined');
+    }
+
+    if (this.#fileList.has(relativeFilePath)) {
+      return true;
+    }
+
+    const fullFilePath = join(this.#config.cwd, relativeFilePath);
+
+    try {
+      const stat = await fs.promises.stat(fullFilePath);
+
+      if (stat.isFile() === true) {
+        this.#addFileToFileList(fullFilePath);
+
+        return true;
+      }
+    } catch (statError) {
+      this.#debuglog(statError.code, statError.path);
+    }
+
+    return false;
   }
 }
