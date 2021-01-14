@@ -57,4 +57,24 @@ describe('LibFileServer', () => {
 
     expect(fileExists).to.be.false;
   });
+
+  it('fileExists should return false if a file isDirectory', async () => {
+    const relativeFilePath = '/a';
+    const fileExists = await libFileIndex.fileExists(relativeFilePath);
+
+    expect(fileExists).to.be.false;
+  });
+
+  it('fileExists should throw on undefined path parameter', async () => {
+    const relativeFilePath = null;
+    let error = null;
+
+    try {
+      await libFileIndex.fileExists(relativeFilePath);
+    } catch (referenceError) {
+      error = referenceError;
+    }
+
+    expect(error).to.be.an.instanceof(ReferenceError);
+  });
 });
