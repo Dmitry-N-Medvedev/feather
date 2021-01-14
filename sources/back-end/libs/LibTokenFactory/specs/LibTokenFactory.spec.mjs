@@ -15,8 +15,8 @@ import {
   Locations,
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
 import {
-  LibTokenManager,
-} from '../LibTokenManager.mjs';
+  LibTokenFactory,
+} from '../LibTokenFactory.mjs';
 import {
   resolveTokenIdentifierName,
 } from '../helpers/resolveTokenIdentifierName.mjs';
@@ -24,7 +24,7 @@ import {
   validateAction,
 } from '../authz/validateAction.mjs';
 
-const debuglog = util.debuglog('LibTokenManager:specs');
+const debuglog = util.debuglog('LibTokenFactory:specs');
 const {
   describe,
   before,
@@ -35,8 +35,8 @@ const {
   expect,
 } = chai;
 
-describe('LibTokenManager', () => {
-  const LibTokenManagerConfig = Object.freeze({
+describe('LibTokenFactory', () => {
+  const LibTokenFactoryConfig = Object.freeze({
     ctx: nanoid(8), // ctx must always by 8 characters long
     redis: {
       host: '127.0.0.1',
@@ -46,7 +46,7 @@ describe('LibTokenManager', () => {
       accessToken: 500,
     },
   });
-  let libTokenManager = null;
+  let libTokenFactory = null;
   let libRedisAdapter = null;
   const SpecRedisInstanceName = 'SpecRedisInstance';
   const LibRedisAdapterConfig = Object.freeze({
@@ -71,16 +71,16 @@ describe('LibTokenManager', () => {
   before(async () => {
     libRedisAdapter = new LibRedisAdapter();
     specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
-    libTokenManager = new LibTokenManager(LibTokenManagerConfig);
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
 
-    return libTokenManager.start();
+    return libTokenFactory.start();
   });
 
   after(async () => {
     await deleteKeys();
 
-    if (libTokenManager !== null) {
-      await libTokenManager.stop();
+    if (libTokenFactory !== null) {
+      await libTokenFactory.stop();
     }
 
     if (libRedisAdapter !== null) {
@@ -91,7 +91,7 @@ describe('LibTokenManager', () => {
   });
 
   it('should issueAccountToken', async () => {
-    const serializedAccountToken = await libTokenManager.issueAccountToken();
+    const serializedAccountToken = await libTokenFactory.issueAccountToken();
 
     expect(serializedAccountToken.length > 0).to.be.true;
 
@@ -113,8 +113,8 @@ describe('LibTokenManager', () => {
       type: ActionTypes.READ,
       object: '/questionnaire.json',
     });
-    const serializedAccountToken = await libTokenManager.issueAccountToken();
-    const serializedAccessToken = await libTokenManager.issueAccessToken(forAction, serializedAccountToken, Locations.FILE_SERVER);
+    const serializedAccountToken = await libTokenFactory.issueAccountToken();
+    const serializedAccessToken = await libTokenFactory.issueAccessToken(forAction, serializedAccountToken, Locations.FILE_SERVER);
 
     expect(serializedAccessToken).to.exist;
 
@@ -128,12 +128,12 @@ describe('LibTokenManager', () => {
 
   it('should fail to issueAccessToken w/ undefined forAction', async () => {
     const forAction = null;
-    const serializedAccountToken = await libTokenManager.issueAccountToken();
+    const serializedAccountToken = await libTokenFactory.issueAccountToken();
 
     let error = null;
 
     try {
-      await libTokenManager.issueAccessToken(forAction, serializedAccountToken, Locations.FILE_SERVER);
+      await libTokenFactory.issueAccessToken(forAction, serializedAccountToken, Locations.FILE_SERVER);
     } catch (forActionError) {
       error = forActionError;
     }
@@ -151,7 +151,7 @@ describe('LibTokenManager', () => {
     let error = null;
 
     try {
-      await libTokenManager.issueAccessToken(forAction, undefinedAccountToken, Locations.FILE_SERVER);
+      await libTokenFactory.issueAccessToken(forAction, undefinedAccountToken, Locations.FILE_SERVER);
     } catch (forActionError) {
       error = forActionError;
     }
@@ -165,9 +165,9 @@ describe('LibTokenManager', () => {
       object: '/questionnaire.json',
     });
     const undefinedLocation = null;
-    const serializedAccountToken = await libTokenManager.issueAccountToken();
+    const serializedAccountToken = await libTokenFactory.issueAccountToken();
 
-    const serializedAccessToken = await libTokenManager.issueAccessToken(forAction, serializedAccountToken, undefinedLocation);
+    const serializedAccessToken = await libTokenFactory.issueAccessToken(forAction, serializedAccountToken, undefinedLocation);
     const deserializedAccessToken = MacaroonsBuilder.deserialize(serializedAccessToken);
 
     const {
