@@ -4,7 +4,7 @@
   "description": "[lib] shared stuff",
   "engines": {
     "node": "=15.5.1",
-    "pnpm": "=5.15.0"
+    "pnpm": "=5.15.1"
   },
   "engineStrict": true,
   "volta": {
