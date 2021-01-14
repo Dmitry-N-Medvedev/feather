@@ -24,7 +24,7 @@ const {
 
 // FIXME: remove this line when code is ready to have it merged automatically on github
 
-describe('LibFileServer', () => {
+describe('LibFileIndex', () => {
   const LibFileIndexConfig = Object.freeze({
     cwd: resolve(process.cwd(), './specs/cwd'),
   });
