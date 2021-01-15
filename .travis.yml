@@ -1,15 +1,13 @@
 dist: focal
 language: minimal
-services:
-  - redis
 os: linux
 env:
   global:
     - PATH=$HOME/.volta:$HOME/.volta/bin:$PATH
 before_install:
+  - sudo add-apt-repository ppa:redislabs/redis
+  - sudo apt-get -q update && sudo apt-get -y install redis
   - curl https://get.volta.sh | bash
-  - ls $HOME/.volta
-  - which volta
   - volta install node@15.6.0
   - volta install pnpm@5.15.1
   - pnpm config set store-dir ~/.pnpm-store
