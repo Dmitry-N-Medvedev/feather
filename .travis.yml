@@ -4,7 +4,7 @@ services:
   - redis
 os: linux
 before_install:
-  - export PATH=~/.volta:~/.volta/bin/volta:$PATH
+  - export PATH=$HOME/.volta:$HOME/.volta/bin/volta:$PATH
   - curl https://get.volta.sh | bash
   - ls $HOME/.volta
   - which volta
@@ -21,3 +21,4 @@ cache:
   npm: false
   directories:
     - "~/.pnpm-store"
+    - "$HOME/.volta"
