@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "description": "[lib] token related functionality",
   "engines": {
-    "node": "=15.5.1",
+    "node": "=15.6.0",
     "pnpm": "=5.15.1"
   },
   "engineStrict": true,
   "volta": {
-    "node": "15.5.1"
+    "node": "15.6.0"
   },
   "type": "module",
   "scripts": {
