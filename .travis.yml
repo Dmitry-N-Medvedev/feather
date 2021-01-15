@@ -2,17 +2,14 @@ dist: focal
 language: node_js
 services:
   - redis
-node_js:
-  - 15.6.0
 os: linux
 before_install:
-  - curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=5.15.1 node
+  - curl https://get.volta.sh | bash
+  - volta install node@15.6.0
+  - volta install pnpm@5.15.1
   - pnpm config set store-dir ~/.pnpm-store
 install:
   - pnpm --recursive install
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
 script:
   - pnpm --recursive run test
 after_success:
