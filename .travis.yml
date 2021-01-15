@@ -1,9 +1,11 @@
 dist: focal
-language: node_js
+language: minimal
 services:
   - redis
 os: linux
 before_install:
+  - export VOLTA_HOME=$HOME/.volta
+  - export PATH=$VOLTA_HOME:$PATH
   - curl https://get.volta.sh | bash
   - volta install node@15.6.0
   - volta install pnpm@5.15.1
