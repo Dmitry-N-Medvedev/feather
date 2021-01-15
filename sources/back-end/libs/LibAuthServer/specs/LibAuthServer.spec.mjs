@@ -49,6 +49,9 @@ describe('LibAuthServer', () => {
   let client = null;
   let accountToken = null;
 
+  const AUTHENTICATION_OK = 200;
+  const AUTHENTICATION_ER = 401;
+
   before(async () => {
     libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
     await libTokenFactory.start();
@@ -74,7 +77,7 @@ describe('LibAuthServer', () => {
     accountToken = null;
   });
 
-  it('should issue a GET request w/ an AccessToken', async () => {
+  it('should succeed to authenticate a GET request', async () => {
     const filePath = `${nanoid(16)}.${nanoid(3)}`;
     const forAction = Object.freeze({
       type: ActionTypes.READ,
@@ -87,6 +90,28 @@ describe('LibAuthServer', () => {
       },
     });
 
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).to.equal(AUTHENTICATION_OK);
+  });
+
+  it('should fail to authenticate a GET request', async () => {
+    const objectPath_In_ForAction = `/questionnaires/${nanoid(16)}.${nanoid(3)}`;
+    const objectPath_In_Request = `questionnaires/${nanoid(16)}.${nanoid(3)}`;
+    const forAction = Object.freeze({
+      type: ActionTypes.READ,
+      object: objectPath_In_ForAction,
+    });
+
+    expect(objectPath_In_ForAction).to.not.equal(objectPath_In_Request);
+
+    const accessToken = await libTokenFactory.issueAccessToken(forAction, accountToken, Locations.FILE_SERVER);
+
+    const response = await client(objectPath_In_Request, {
+      headers: {
+        Authorization: accessToken,
+      },
+      throwHttpErrors: false,
+    });
+
+    expect(response.statusCode).to.equal(AUTHENTICATION_ER);
   });
 });
