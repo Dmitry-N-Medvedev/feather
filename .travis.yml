@@ -3,8 +3,10 @@ language: minimal
 services:
   - redis
 os: linux
+env:
+  global:
+    - PATH=$HOME/.volta:$HOME/.volta/bin:$PATH
 before_install:
-  - export PATH=$HOME/.volta:$HOME/.volta/bin/volta:$PATH
   - curl https://get.volta.sh | bash
   - ls $HOME/.volta
   - which volta
