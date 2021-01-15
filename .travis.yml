@@ -3,7 +3,7 @@ language: minimal
 env:
   global:
     - VOLTA_HOME=$HOME/.volta
-    - PATH=$VOLTA_HOME:$PATH
+    - PATH=$VOLTA_HOME:$VOLTA_HOME/bin/volta:$PATH
 services:
   - redis
 os: linux
