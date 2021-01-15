@@ -3,7 +3,7 @@ language: node_js
 services:
   - redis
 node_js:
-  - 15.5.1
+  - 15.6.0
 os: linux
 before_install:
   - curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=5.15.1 node
