@@ -1,11 +1,13 @@
 dist: focal
 language: minimal
+env:
+  global:
+    - VOLTA_HOME=$HOME/.volta
+    - PATH=$VOLTA_HOME:$PATH
 services:
   - redis
 os: linux
 before_install:
-  - export VOLTA_HOME=$HOME/.volta
-  - export PATH=$VOLTA_HOME:$PATH
   - curl https://get.volta.sh | bash
   - volta install node@15.6.0
   - volta install pnpm@5.15.1
