@@ -37,10 +37,13 @@ export class LibAuthServer {
     this.#debuglog = util.debuglog(this.constructor.name);
     this.#config = Object.freeze({ ...config });
     this.#macaroonsBuilder = libmacaroons.MacaroonsBuilder;
+
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
   }
 
   async start() {
-    if (this.#server !== null) {
+    if (this.#handle !== null) {
       return Promise.resolve();
     }
 
@@ -85,6 +88,8 @@ export class LibAuthServer {
         }
 
         this.#handle = handle;
+
+        this.#debuglog(`started on port ${this.#config.port}`);
       });
 
     return Promise.resolve();
@@ -104,6 +109,8 @@ export class LibAuthServer {
     this.#server = null;
     this.#config = null;
     this.#macaroonsBuilder = null;
+
+    this.#debuglog(`stopped listening on port: ${this.#config.port}`);
 
     return Promise.resolve();
   }

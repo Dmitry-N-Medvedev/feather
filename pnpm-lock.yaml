@@ -85,46 +85,6 @@ importers:
       mocha: ^8.2.1
       nanoid: ^3.1.20
       node-fetch: ^2.6.1
-  sources/back-end/libs/LibFileIndex:
-    dependencies:
-      '@dmitry-n-medvedev/libcommon': link:../LibCommon
-      '@dmitry-n-medvedev/libredisadapter': link:../LibRedisAdapter
-      '@dmitry-n-medvedev/libtoken': link:../libToken
-      libsodium-wrappers: 0.7.8
-      macaroons.js: 0.3.9
-    devDependencies:
-      c8: 7.4.0
-      chai: 4.2.0
-      codecov: 3.8.1
-      cross-env: 7.0.3
-      dotenv: 8.2.0
-      eslint: 7.17.0
-      eslint-config-airbnb-base: 14.2.1_860e0a3f1402db18f3476b9d86a8ac51
-      eslint-plugin-chai-friendly: 0.6.0_eslint@7.17.0
-      eslint-plugin-import: 2.22.1_eslint@7.17.0
-      eslint-plugin-node: 11.1.0_eslint@7.17.0
-      mocha: 8.2.1
-      nanoid: 3.1.20
-      node-fetch: 2.6.1
-    specifiers:
-      '@dmitry-n-medvedev/libcommon': workspace:^0.0.0
-      '@dmitry-n-medvedev/libredisadapter': workspace:^0.0.0
-      '@dmitry-n-medvedev/libtoken': workspace:^0.0.0
-      c8: ^7.4.0
-      chai: ^4.2.0
-      codecov: ^3.8.1
-      cross-env: ^7.0.3
-      dotenv: ^8.2.0
-      eslint: ^7.17.0
-      eslint-config-airbnb-base: ^14.2.1
-      eslint-plugin-chai-friendly: ^0.6.0
-      eslint-plugin-import: ^2.22.1
-      eslint-plugin-node: ^11.1.0
-      libsodium-wrappers: ^0.7.8
-      macaroons.js: ^0.3.9
-      mocha: ^8.2.1
-      nanoid: ^3.1.20
-      node-fetch: ^2.6.1
   sources/back-end/libs/LibRedisAdapter:
     dependencies:
       redis-fast-driver: 2.1.5
@@ -233,6 +193,52 @@ importers:
       mocha: ^8.2.1
       nanoid: ^3.1.20
       node-fetch: ^2.6.1
+  sources/back-end/servers/AuthServer:
+    dependencies:
+      '@dmitry-n-medvedev/libauthserver': link:../../libs/LibAuthServer
+    devDependencies:
+      '@dmitry-n-medvedev/libcommon': link:../../libs/LibCommon
+      '@dmitry-n-medvedev/libtoken': link:../../libs/libToken
+      '@dmitry-n-medvedev/libtokenfactory': link:../../libs/LibTokenFactory
+      c8: 7.4.0
+      chai: 4.2.0
+      codecov: 3.8.1
+      cross-env: 7.0.3
+      dotenv: 8.2.0
+      eslint: 7.17.0
+      eslint-config-airbnb-base: 14.2.1_860e0a3f1402db18f3476b9d86a8ac51
+      eslint-plugin-chai-friendly: 0.6.0_eslint@7.17.0
+      eslint-plugin-import: 2.22.1_eslint@7.17.0
+      eslint-plugin-node: 11.1.0_eslint@7.17.0
+      execa: 5.0.0
+      got: 11.8.1
+      mocha: 8.2.1
+      nanoid: 3.1.20
+      node-fetch: 2.6.1
+      uWebSockets.js: github.com/uNetworking/uWebSockets.js/b4bc740f46f1508c0f342b999db4d1f9dc80deab
+      which: 2.0.2
+    specifiers:
+      '@dmitry-n-medvedev/libauthserver': workspace:^0.0.0
+      '@dmitry-n-medvedev/libcommon': workspace:^0.0.0
+      '@dmitry-n-medvedev/libtoken': workspace:^0.0.0
+      '@dmitry-n-medvedev/libtokenfactory': workspace:^0.0.0
+      c8: ^7.4.0
+      chai: ^4.2.0
+      codecov: ^3.8.1
+      cross-env: ^7.0.3
+      dotenv: ^8.2.0
+      eslint: ^7.17.0
+      eslint-config-airbnb-base: ^14.2.1
+      eslint-plugin-chai-friendly: ^0.6.0
+      eslint-plugin-import: ^2.22.1
+      eslint-plugin-node: ^11.1.0
+      execa: ^5.0.0
+      got: ^11.8.1
+      mocha: ^8.2.1
+      nanoid: ^3.1.20
+      node-fetch: ^2.6.1
+      uWebSockets.js: github:uNetworking/uWebSockets.js#v18.14.0
+      which: ^2.0.2
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.11:
@@ -1213,7 +1219,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.0
       '@types/keyv': 3.1.1
-      '@types/node': 14.14.20
+      '@types/node': 14.14.21
       '@types/responselike': 1.0.0
     dev: true
     resolution:
@@ -1236,17 +1242,17 @@ packages:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
   /@types/keyv/3.1.1:
     dependencies:
-      '@types/node': 14.14.20
+      '@types/node': 14.14.21
     dev: true
     resolution:
       integrity: sha512-MPtoySlAZQ37VoLaPcTHCu1RWJ4llDkULYZIzOYxlhxBqYPB0RsRlmMU0R6tahtFe27mIdkHV+551ZWV4PLmVw==
-  /@types/node/14.14.20:
+  /@types/node/14.14.21:
     dev: true
     resolution:
-      integrity: sha512-Y93R97Ouif9JEOWPIUyU+eyIdyRqQR0I8Ez1dzku4hDx34NWh4HbtIc3WNzwB1Y9ULvNGeu5B8h8bVL5cAk4/A==
+      integrity: sha512-cHYfKsnwllYhjOzuC5q1VpguABBeecUp24yFluHpn/BQaVxB1CuQ1FSRZCzrPxrkIfWISXV2LbeoBthLWg0+0A==
   /@types/responselike/1.0.0:
     dependencies:
-      '@types/node': 14.14.20
+      '@types/node': 14.14.21
     dev: true
     resolution:
       integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==
@@ -2091,6 +2097,22 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
+  /execa/5.0.0:
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 6.0.0
+      human-signals: 2.1.0
+      is-stream: 2.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 4.0.1
+      onetime: 5.1.2
+      signal-exit: 3.0.3
+      strip-final-newline: 2.0.0
+    dev: true
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-ov6w/2LCiuyO4RLYGdpFGjkcs0wMTgGE8PrkTHikeUy5iJekXyPIKUjifk5CsE0pt7sMCrMZ3YNqoCj6idQOnQ==
   /fast-deep-equal/3.1.3:
     dev: true
     resolution:
@@ -2232,6 +2254,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==
+  /get-stream/6.0.0:
+    dev: true
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-A1B3Bh1UmL0bidM/YX2NsCOTnGJePL9rO/M+Mw3m9f2gUpfokS0hi5Eah0WSUEWZdZhIZtMjkIYS7mDfOqNHbg==
   /glob-parent/5.1.1:
     dependencies:
       is-glob: 4.0.1
@@ -2364,6 +2392,12 @@ packages:
       node: '>= 6.0.0'
     resolution:
       integrity: sha512-zoDhWrkR3of1l9QAL8/scJZyLu8j/gBkcwcaQOZh7Gyh/+uJQzGVETdgT30akuwkpL8HTRfssqI3BZuV18teDg==
+  /human-signals/2.1.0:
+    dev: true
+    engines:
+      node: '>=10.17.0'
+    resolution:
+      integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
   /ignore-walk/3.0.3:
     dependencies:
       minimatch: 3.0.4
@@ -2490,6 +2524,12 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-1+QkEcxiLlB7VEyFtyBg94e08OAsvq7FUBgApTq/w2ymCLyKJgDPsybBENVtA7XCQEgEXxKPonG+mvYRxh/LIg==
+  /is-stream/2.0.0:
+    dev: true
+    engines:
+      node: '>=8'
+    resolution:
+      integrity: sha512-XCoy+WlUr7d1+Z8GgSuXmpuUFC9fOhRXglJMx+dwLKTkL44Cjd4W1Z5P+BQZpr+cR93aGP4S/s7Ftw6Nd/kiEw==
   /is-string/1.0.5:
     dev: true
     engines:
@@ -2717,6 +2757,16 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
+  /merge-stream/2.0.0:
+    dev: true
+    resolution:
+      integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
+  /mimic-fn/2.1.0:
+    dev: true
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
   /mimic-response/1.0.1:
     dev: true
     engines:
@@ -2833,6 +2883,14 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-2s47yzUxdexf1OhyRi4Em83iQk0aPvwTddtFz4hnSSw9dCEsLEGf6SwIO8ss/19S9iBb5sJaOuTvTGDeZI00BQ==
+  /npm-run-path/4.0.1:
+    dependencies:
+      path-key: 3.1.1
+    dev: true
+    engines:
+      node: '>=8'
+    resolution:
+      integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==
   /object-inspect/1.9.0:
     dev: true
     resolution:
@@ -2882,6 +2940,14 @@ packages:
     dev: true
     resolution:
       integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E=
+  /onetime/5.1.2:
+    dependencies:
+      mimic-fn: 2.1.0
+    dev: true
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==
   /optionator/0.9.1:
     dependencies:
       deep-is: 0.1.3
@@ -3395,6 +3461,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=
+  /strip-final-newline/2.0.0:
+    dev: true
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
   /strip-json-comments/3.1.1:
     dev: true
     engines:
