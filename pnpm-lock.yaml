@@ -239,6 +239,43 @@ importers:
       node-fetch: ^2.6.1
       uWebSockets.js: github:uNetworking/uWebSockets.js#v18.14.0
       which: ^2.0.2
+  sources/back-end/servers/FileServer:
+    devDependencies:
+      c8: 7.4.0
+      chai: 4.2.0
+      codecov: 3.8.1
+      cross-env: 7.0.3
+      dotenv: 8.2.0
+      eslint: 7.17.0
+      eslint-config-airbnb-base: 14.2.1_860e0a3f1402db18f3476b9d86a8ac51
+      eslint-plugin-chai-friendly: 0.6.0_eslint@7.17.0
+      eslint-plugin-import: 2.22.1_eslint@7.17.0
+      eslint-plugin-node: 11.1.0_eslint@7.17.0
+      execa: 5.0.0
+      got: 11.8.1
+      mocha: 8.2.1
+      nanoid: 3.1.20
+      node-fetch: 2.6.1
+      uWebSockets.js: github.com/uNetworking/uWebSockets.js/b4bc740f46f1508c0f342b999db4d1f9dc80deab
+      which: 2.0.2
+    specifiers:
+      c8: ^7.4.0
+      chai: ^4.2.0
+      codecov: ^3.8.1
+      cross-env: ^7.0.3
+      dotenv: ^8.2.0
+      eslint: ^7.17.0
+      eslint-config-airbnb-base: ^14.2.1
+      eslint-plugin-chai-friendly: ^0.6.0
+      eslint-plugin-import: ^2.22.1
+      eslint-plugin-node: ^11.1.0
+      execa: ^5.0.0
+      got: ^11.8.1
+      mocha: ^8.2.1
+      nanoid: ^3.1.20
+      node-fetch: ^2.6.1
+      uWebSockets.js: github:uNetworking/uWebSockets.js#v18.14.0
+      which: ^2.0.2
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.11:
