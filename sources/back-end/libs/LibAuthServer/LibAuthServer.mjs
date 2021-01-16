@@ -101,16 +101,17 @@ export class LibAuthServer {
     }
 
     uWS.us_listen_socket_close(this.#handle);
+
+    this.#debuglog(`stopped listening on port: ${this.#config.port}`);
+
     this.#libRedisAdapter.shutDownInstance(this.#redisInstanceReader);
     this.#libRedisAdapter = null;
     this.#redisInstanceReader = null;
     this.#handle = null;
-    this.#debuglog = null;
     this.#server = null;
-    this.#config = null;
     this.#macaroonsBuilder = null;
-
-    this.#debuglog(`stopped listening on port: ${this.#config.port}`);
+    this.#debuglog = null;
+    this.#config = null;
 
     return Promise.resolve();
   }
