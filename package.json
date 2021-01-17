@@ -13,7 +13,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "verdaccio": "verdaccio --config=./verdaccio/config/verdaccio.yaml --listen=7348",
-    "publish-libs": "cross-env PNPM_REGISTRY_MOCK_UPLINK=http://localhost:7348 pnpm --filter=./sources/back-end/libs -r publish",
+    "publish-libs": "cross-env NPM_CONFIG_REGISTRY=http://localhost:7348 pnpm --filter=./sources/back-end/libs -r publish",
     "publish-all": "run-p -r verdaccio public-libs"
   },
   "directories": {

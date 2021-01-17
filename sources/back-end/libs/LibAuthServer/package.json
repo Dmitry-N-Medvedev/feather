@@ -10,6 +10,9 @@
   "volta": {
     "node": "15.6.0"
   },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
   "type": "module",
   "main": "./LibAuthServer.mjs",
   "scripts": {
