@@ -10,6 +10,12 @@
   "volta": {
     "node": "15.6.0"
   },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "verdaccio": "verdaccio --config=./verdaccio/config/verdaccio.yaml --listen=7348",
+    "publish-libs": "cross-env PNPM_REGISTRY_MOCK_UPLINK=http://localhost:7348 pnpm --filter=./sources/back-end/libs -r publish",
+    "publish-all": "run-p -r verdaccio public-libs"
+  },
   "directories": {
     "doc": "docs"
   },
@@ -30,7 +36,9 @@
     "@babel/core": "^7.12.10",
     "@babel/eslint-parser": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
+    "cross-env": "^7.0.3",
     "eslint": "^7.17.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^4.1.3"
   }
 }
