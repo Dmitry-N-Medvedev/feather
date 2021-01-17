@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# docker build --tag auth_server:0.0.0 ./sources/back-end/servers/AuthServer
+
+docker build --tag auth_server:0.0.0 - < ./AuthServer.Dockerfile
+
+# NOTE: docker run -it e8a4ba6e7e77 /bin/bash
+# the e8a4ba6e7e77 is the image id (docker image ls)
