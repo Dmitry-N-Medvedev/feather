@@ -40,7 +40,9 @@ RUN useradd \
 
 FROM add-pm2-user AS install-volta
 USER pm2
-RUN curl --anyauth --progress-bar --http2 --retry 0 --tcp-fastopen https://get.volta.sh | bash
+ENV HOME=/home/pm2
+COPY ./dockerConfigs/curl/.curlrc /home/pm2/
+RUN curl https://get.volta.sh | bash
 
 FROM install-volta AS install-node-pnpm-pm2
 ARG node_version=15.6.0
