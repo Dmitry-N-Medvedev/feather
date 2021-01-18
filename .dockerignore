@@ -9,7 +9,7 @@
 **/.gitignore
 **/.travis.yml
 **/codecov.yml
-**/Dockerfile
+**/docker
 **/*.md
 **/.eslintrc.js
 **/.dockerignore
@@ -17,4 +17,7 @@
 **/.travis.yml
 **/babel.config.json
 **/codecov.yml
-**/README.md
+**/.git
+**/.editorconfig
+**/.github
+**/.vscode
