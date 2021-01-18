@@ -26,7 +26,7 @@ RUN apt-get --assume-yes --no-install-recommends update && \
     apt-get purge --assume-yes --autoremove && \
     apt-get clean --assume-yes
 COPY ./dockerConfigs/AuthServer/HAProxy/haproxy.cfg /etc/haproxy/
-RUN /etc/init.d/haproxy restart
+RUN update-rc.d haproxy defaults
 
 FROM HAproxy AS add-pm2-user
 RUN useradd \
