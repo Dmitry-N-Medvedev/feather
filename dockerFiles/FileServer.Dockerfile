@@ -2,9 +2,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 FROM debian:buster-slim AS os-base
 SHELL ["/bin/bash", "-c"]
-RUN apt-get --assume-yes --no-install-recommends update && \
-    apt-get --assume-yes --no-install-recommends upgrade && \
-    apt-get --assume-yes --no-install-recommends install \
+RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
+    && apt-get --assume-yes --no-install-recommends --no-install-suggests upgrade \
+    && apt-get --assume-yes --no-install-recommends --no-install-suggests install \
       ca-certificates \
       curl \
       apt-utils \
@@ -13,18 +13,17 @@ RUN apt-get --assume-yes --no-install-recommends update && \
       apt-transport-https \
       procps \
       git \
-      gnupg2 && \
-    rm -rf /var/lib/apt/lists/*
+      gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
 
 FROM os-base as build-nginx
-# COPY ./dockerConfigs/curl/.curlrc /home/pm2/
-RUN mkdir -p /tmp/nginx-build/sources && \
-    cd /tmp/nginx-build && \
-    curl http://nginx.org/download/nginx-1.19.6.tar.gz -o nginx.tar.gz && \
-    tar -xzf nginx.tar.gz --strip-components=1 --directory ./sources && \
-    rm -f nginx.tar.gz && \
-    cd ./sources && \
-    ./configure \
+RUN mkdir -p /tmp/nginx-build/sources \
+    && cd /tmp/nginx-build \
+    && curl http://nginx.org/download/nginx-1.19.6.tar.gz -o nginx.tar.gz \
+    && tar -xzf nginx.tar.gz --strip-components=1 --directory ./sources \
+    && rm -f nginx.tar.gz \
+    && cd ./sources \
+    && ./configure \
       --sbin-path=/usr/local/nginx/nginx \
       --conf-path=/usr/local/nginx/nginx.conf \
       --pid-path=/usr/local/nginx/nginx.pid \
@@ -67,11 +66,20 @@ RUN mkdir -p /tmp/nginx-build/sources && \
       --without-stream_return_module \
       --without-stream_upstream_hash_module \
       --without-stream_upstream_least_conn_module \
-      --without-stream_upstream_zone_module && \
-    make && \
-    make install
+      --without-stream_upstream_zone_module \
+    && make \
+    && make install \
+    && cd /usr/local/nginx \
+    && rm -rf /tmp/nginx-build
+COPY dockerConfigs/nginx/nginx.conf /usr/local/nginx/
+COPY dockerConfigs/nginx/mime.types /usr/local/nginx/
 
-FROM build-nginx AS file-server
+FROM build-nginx AS add-nginx-user
+RUN set -x \
+    && addgroup --system --gid 101 nginx \
+    && adduser --system --disabled-login --ingroup nginx --no-create-home --home /nonexistent --gecos "nginx user" --shell /bin/false --uid 101 nginx
+
+FROM add-nginx-user AS file-server
 EXPOSE 80
 STOPSIGNAL SIGTERM
 CMD nginx -g "daemon off;"
