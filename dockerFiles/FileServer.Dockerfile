@@ -81,14 +81,13 @@ RUN set -x \
     && chown -R nginx:nginx /usr/local/nginx
 
 FROM add-nginx-user AS clean-up
-RUN echo "cleaning up"
-# RUN apt-get purge --auto-remove \
-#       curl \
-#       build-essential \
-#       procps \
-#       nano \
-#     && apt-get clean \
-#     && apt-get autoclean
+RUN apt-get purge --auto-remove \
+      curl \
+      build-essential \
+      procps \
+      nano \
+    && apt-get clean \
+    && apt-get autoclean
 
 FROM clean-up AS file-server
 EXPOSE 80
