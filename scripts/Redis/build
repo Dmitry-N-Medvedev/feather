@@ -1,0 +1,8 @@
+#!/bin/bash
+
+docker build --tag redis-sec:0.0.0 --file dockerFiles/Redis.Dockerfile .
+
+# NOTE: docker run -it e8a4ba6e7e77 /bin/bash
+# the e8a4ba6e7e77 is the image id (docker image ls)
+
+# ATTACH AS ROOT: docker exec -u 0 -it <mycontainer> /bin/bbash

@@ -16,19 +16,7 @@ RUN apt-get --assume-yes --no-install-recommends update && \
       gnupg2 && \
     rm -rf /var/lib/apt/lists/*
 
-FROM os-base AS HAproxy
-RUN curl https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add -
-RUN echo deb http://haproxy.debian.net buster-backports-2.3 main | tee /etc/apt/sources.list.d/haproxy.list
-RUN apt-get --assume-yes --no-install-recommends update && \
-    apt-get --assume-yes --no-install-recommends install haproxy=2.3.\* && \
-    apt-get --assume-yes remove gnupg2
-    #  && \
-    # apt-get purge --assume-yes --autoremove && \
-    # apt-get clean --assume-yes
-COPY ./dockerConfigs/AuthServer/HAProxy/haproxy.cfg /etc/haproxy/
-RUN update-rc.d haproxy defaults && update-rc.d haproxy enable
-
-FROM HAproxy AS add-pm2-user
+FROM os-base AS add-pm2-user
 RUN useradd \
     --home-dir /home/pm2 \
     --create-home \
@@ -74,9 +62,7 @@ FROM copy-project-files as AuthServer
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
 EXPOSE 80
-EXPOSE 1936
 ENV PATH=~/.volta:~/.volta/bin:$PATH
 ENV NODE_ENV=production
 WORKDIR /home/pm2/feather/sources/back-end/servers/AuthServer
 CMD pm2-runtime start ./ecosystem.config.js
-  # --cwd ./sources/back-end/servers/AuthServer/ \
