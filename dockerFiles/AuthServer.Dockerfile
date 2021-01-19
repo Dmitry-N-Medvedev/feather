@@ -13,22 +13,12 @@ RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
       apt-transport-https \
       procps \
       gnupg2 \
+      git \
     && apt-get purge --assume-yes --autoremove \
     && apt-get clean --assume-yes \
     && rm -rf /var/lib/apt/lists/*
 
-FROM os-base AS HAproxy
-RUN curl https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add -
-RUN echo deb http://haproxy.debian.net buster-backports-2.3 main | tee /etc/apt/sources.list.d/haproxy.list
-RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
-    && apt-get --assume-yes --no-install-recommends --no-install-suggests install haproxy=2.3.\* \
-    && apt-get --assume-yes remove gnupg2 \
-    && apt-get purge --assume-yes --autoremove \
-    && apt-get clean --assume-yes
-COPY ./dockerConfigs/AuthServer/HAProxy/haproxy.cfg /etc/haproxy/
-RUN update-rc.d haproxy defaults
-
-FROM HAproxy AS add-pm2-user
+FROM os-base AS add-pm2-user
 RUN useradd \
     --home-dir /home/pm2 \
     --create-home \
