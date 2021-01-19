@@ -51,6 +51,7 @@ describe('LibAuthServer', () => {
 
   const AUTHENTICATION_OK = 200;
   const AUTHENTICATION_ER = 401;
+  const HEALTH_CHECK_OK = AUTHENTICATION_OK;
 
   before(async () => {
     libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
@@ -113,5 +114,21 @@ describe('LibAuthServer', () => {
     });
 
     expect(response.statusCode).to.equal(AUTHENTICATION_ER);
+  });
+
+  it('should do /health-check', async () => {
+    let statusCode = null;
+
+    try {
+      const response = await client('health-check', {
+        throwHttpErrors: false,
+      });
+
+      statusCode = response.statusCode;
+    } catch (healthCheckError) {
+      debuglog(healthCheckError);
+    } finally {
+      expect(statusCode).to.equal(HEALTH_CHECK_OK);
+    }
   });
 });

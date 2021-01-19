@@ -82,6 +82,13 @@ export class LibAuthServer {
 
         return this;
       })
+      .get('/health-check', (res) => {
+        this.#debuglog('/health-check');
+
+        res.writeStatus(OK_STATUS);
+
+        return res.end();
+      })
       .listen(this.#config.port, (handle) => {
         if (!handle) {
           throw new Error(`failed to listen on port ${this.#config.port}`);
