@@ -53,15 +53,16 @@ ENV PATH=$PATH:/home/pm2/.volta/tools/image/node/$node_version/bin
 RUN pnpm --recursive install
 
 FROM copy-project-files AS clean-up
-RUN apt-get purge --auto-remove \
+USER root
+RUN apt-get purge --auto-remove --assume-yes \
       curl \
       build-essential \
       procps \
-      nano \
     && apt-get clean \
     && apt-get autoclean
 
 FROM clean-up as AuthServer
+USER pm2
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
 EXPOSE 80

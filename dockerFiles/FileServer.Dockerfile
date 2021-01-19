@@ -81,7 +81,7 @@ RUN set -x \
     && chown -R nginx:nginx /usr/local/nginx
 
 FROM add-nginx-user AS clean-up
-RUN apt-get purge --auto-remove \
+RUN apt-get purge --auto-remove --assume-yes \
       curl \
       build-essential \
       procps \
