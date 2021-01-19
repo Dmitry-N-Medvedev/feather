@@ -72,7 +72,6 @@ FROM copy-project-files as AuthServer
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
 EXPOSE 80
-EXPOSE 1936
 ENV PATH=~/.volta:~/.volta/bin:$PATH
 ENV NODE_ENV=production
 WORKDIR /home/pm2/feather/sources/back-end/servers/AuthServer

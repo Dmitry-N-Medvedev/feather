@@ -5,15 +5,12 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
     && apt-get --assume-yes --no-install-recommends --no-install-suggests upgrade \
     && apt-get --assume-yes --no-install-recommends --no-install-suggests install \
-      ca-certificates \
+      # ca-certificates \
+      # gcc \
       curl \
-      apt-utils \
-      python \
       build-essential \
-      apt-transport-https \
       procps \
-      git \
-      gnupg2 \
+      nano \
     && rm -rf /var/lib/apt/lists/*
 
 FROM os-base as build-nginx
@@ -27,6 +24,7 @@ RUN mkdir -p /tmp/nginx-build/sources \
       --sbin-path=/usr/local/nginx/nginx \
       --conf-path=/usr/local/nginx/nginx.conf \
       --pid-path=/usr/local/nginx/nginx.pid \
+      --with-debug \
       --with-threads \
       --with-file-aio \
       --with-http_v2_module \
@@ -43,7 +41,7 @@ RUN mkdir -p /tmp/nginx-build/sources \
       --without-http_split_clients_module \
       --without-http_referer_module \
       --without-http_rewrite_module \
-      --without-http_proxy_module \
+      # --without-http_proxy_module \
       --without-http_fastcgi_module \
       --without-http_uwsgi_module \
       --without-http_scgi_module \
@@ -70,16 +68,30 @@ RUN mkdir -p /tmp/nginx-build/sources \
     && make \
     && make install \
     && cd /usr/local/nginx \
-    && rm -rf /tmp/nginx-build
+    && rm -rf /tmp/nginx-build \
+    && mkdir -p /usr/local/nginx/questionnaires
 COPY dockerConfigs/nginx/nginx.conf /usr/local/nginx/
 COPY dockerConfigs/nginx/mime.types /usr/local/nginx/
+COPY dockerConfigs/nginx/questionnaires/2479b25e-6980-4208-8de7-2639e14604da.json /usr/local/nginx/questionnaires/
 
 FROM build-nginx AS add-nginx-user
 RUN set -x \
     && addgroup --system --gid 101 nginx \
-    && adduser --system --disabled-login --ingroup nginx --no-create-home --home /nonexistent --gecos "nginx user" --shell /bin/false --uid 101 nginx
+    && adduser --system --disabled-login --ingroup nginx --no-create-home --gecos "nginx user" --shell /bin/false --uid 101 nginx \
+    && chown -R nginx:nginx /usr/local/nginx
 
-FROM add-nginx-user AS file-server
+FROM add-nginx-user AS clean-up
+RUN echo "cleaning up"
+# RUN apt-get purge --auto-remove \
+#       curl \
+#       build-essential \
+#       procps \
+#       nano \
+#     && apt-get clean \
+#     && apt-get autoclean
+
+FROM clean-up AS file-server
 EXPOSE 80
 STOPSIGNAL SIGTERM
-CMD nginx -g "daemon off;"
+CMD /usr/local/nginx/nginx -c /usr/local/nginx/nginx.conf
+

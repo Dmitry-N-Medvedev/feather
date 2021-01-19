@@ -1,0 +1,61 @@
+version: "3.9"
+
+networks:
+  hostnet:
+    external: true
+    name: host
+  feather:
+    external: false
+    name: feather
+    attachable: true
+
+services:
+  auth-server:
+    build:
+      context: .
+      dockerfile: dockerFiles/AuthServer.Dockerfile
+      network: host
+    container_name: auth-server:0.0.0
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+    depends_on:
+      - redis-server
+    networks:
+      feather:
+        aliases:
+          - auth-server
+  file-server:
+    build:
+      context: .
+      dockerfile: dockerFiles/FileServer.Dockerfile
+      network: host
+    container_name: file-server:0.0.0
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+    depends_on:
+      - auth-server
+    networks:
+      feather:
+        aliases:
+          - file-server
+  redis-server:
+    build:
+      context: .
+      dockerfile: dockerFiles/Redis.Dockerfile
+      network: host
+    container_name: file-server:0.0.0
+    ports:
+      - target: 6379
+        published: 6379
+        protocol: tcp
+        mode: host
+    networks:
+      feather:
+        aliases:
+          - redis-server
