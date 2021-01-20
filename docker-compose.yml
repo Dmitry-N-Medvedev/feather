@@ -1,13 +1,7 @@
 version: "3.9"
 
 networks:
-  hostnet:
-    external: true
-    name: host
   feather:
-    external: false
-    name: feather
-    attachable: true
 
 services:
   auth-server:
@@ -15,47 +9,44 @@ services:
       context: .
       dockerfile: dockerFiles/AuthServer.Dockerfile
       network: host
-    container_name: auth-server:0.0.0
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
+    expose:
+      - "80"
     depends_on:
       - redis-server
     networks:
-      feather:
-        aliases:
-          - auth-server
+      - feather
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
   file-server:
     build:
       context: .
       dockerfile: dockerFiles/FileServer.Dockerfile
       network: host
-    container_name: file-server:0.0.0
     ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
+      - "80"
+    expose:
+      - "80"
     depends_on:
       - auth-server
+      - redis-server
     networks:
-      feather:
-        aliases:
-          - file-server
+      - feather
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
   redis-server:
     build:
       context: .
       dockerfile: dockerFiles/Redis.Dockerfile
       network: host
-    container_name: file-server:0.0.0
-    ports:
-      - target: 6379
-        published: 6379
-        protocol: tcp
-        mode: host
+    expose:
+      - "6379"
     networks:
-      feather:
-        aliases:
-          - redis-server
+      - feather
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
