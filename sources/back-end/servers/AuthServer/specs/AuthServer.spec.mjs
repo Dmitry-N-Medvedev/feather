@@ -122,7 +122,7 @@ describe('Auth Server', () => {
   });
 
   // eslint-disable-next-line prefer-arrow-callback
-  it.only('should succeed to authenticate a GET request', async function succeedAuth() {
+  it('should succeed to authenticate a GET request', async function succeedAuth() {
     const filePath = `${nanoid(16)}.${nanoid(3)}`;
     const forAction = Object.freeze({
       type: ActionTypes.READ,

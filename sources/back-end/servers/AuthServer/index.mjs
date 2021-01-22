@@ -32,6 +32,8 @@ process.on('uncaughtException', handleShutdownSignal);
 process.on('unhandledRejection', handleShutdownSignal);
 
 (async () => {
+  debuglog('starting...');
+
   dotenv.config();
 
   const LibAuthServerConfig = Object.freeze({
@@ -41,6 +43,8 @@ process.on('unhandledRejection', handleShutdownSignal);
       port: parseInt(process.env.REDIS_PORT, 10) || null,
     },
   });
+
+  debuglog('LibAuthServerConfig:', LibAuthServerConfig);
 
   libAuthServer = new LibAuthServer(LibAuthServerConfig);
 

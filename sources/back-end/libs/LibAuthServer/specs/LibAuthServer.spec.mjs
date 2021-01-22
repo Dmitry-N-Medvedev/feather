@@ -54,28 +54,42 @@ describe('LibAuthServer', () => {
   const HEALTH_CHECK_OK = AUTHENTICATION_OK;
 
   before(async () => {
-    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
-    await libTokenFactory.start();
-    accountToken = await libTokenFactory.issueAccountToken();
+    try {
+      libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
+      await libTokenFactory.start();
+      accountToken = await libTokenFactory.issueAccountToken();
 
-    libAuthServer = new LibAuthServer(LibAuthServerConfig);
+      libAuthServer = new LibAuthServer(LibAuthServerConfig);
+      await libAuthServer.start();
 
-    await libAuthServer.start();
+      client = got.extend({
+        prefixUrl: `http://localhost:${LibAuthServerConfig.port}`,
+      });
+    } catch (error) {
+      debuglog(error);
+    }
 
-    client = got.extend({
-      prefixUrl: `http://localhost:${LibAuthServerConfig.port}`,
-    });
+    return Promise.resolve();
   });
 
   after(async () => {
-    client = null;
+    try {
+      client = null;
 
-    await libAuthServer.stop();
-    libAuthServer = null;
+      if (libAuthServer !== null) {
+        await libAuthServer.stop();
 
-    await libTokenFactory.stop();
-    libTokenFactory = null;
-    accountToken = null;
+        libAuthServer = null;
+      }
+
+      if (libTokenFactory !== null) {
+        await libTokenFactory.stop();
+        libTokenFactory = null;
+      }
+      accountToken = null;
+    } catch (error) {
+      debuglog(error);
+    }
   });
 
   it('should succeed to authenticate a GET request', async () => {

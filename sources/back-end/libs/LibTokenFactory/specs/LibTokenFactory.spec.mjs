@@ -35,6 +35,10 @@ const {
   expect,
 } = chai;
 
+mocha.Runner.prototype.uncaught = (err) => {
+  debuglog('UNCAUGHT ERROR', err);
+};
+
 describe('LibTokenFactory', () => {
   const LibTokenFactoryConfig = Object.freeze({
     ctx: nanoid(8), // ctx must always by 8 characters long
@@ -69,22 +73,40 @@ describe('LibTokenFactory', () => {
   };
 
   before(async () => {
-    libRedisAdapter = new LibRedisAdapter();
-    specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
-    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
+    const to = setTimeout(() => Promise.resolve(), 500);
 
-    return libTokenFactory.start();
+    try {
+      libRedisAdapter = new LibRedisAdapter();
+      specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
+      libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
+
+      await libTokenFactory.start();
+    } catch (error) {
+      debuglog(error.message);
+    } finally {
+      clearTimeout(to);
+    }
+
+    return Promise.resolve();
   });
 
   after(async () => {
-    await deleteKeys();
+    const to = setTimeout(() => Promise.resolve(), 100);
 
-    if (libTokenFactory !== null) {
-      await libTokenFactory.stop();
-    }
+    try {
+      deleteKeys();
 
-    if (libRedisAdapter !== null) {
-      await libRedisAdapter.destroy();
+      if (libTokenFactory !== null) {
+        await libTokenFactory.stop();
+      }
+
+      if (libRedisAdapter !== null) {
+        await libRedisAdapter.destroy();
+      }
+    } catch (error) {
+      debuglog(error);
+    } finally {
+      clearTimeout(to);
     }
 
     return Promise.resolve();

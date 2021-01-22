@@ -19,6 +19,9 @@ import {
 
 const OK_STATUS = '200 OK';
 const UNAUTHORIZED_STATUS = '401 Unauthorized';
+const NOT_READY_STATUS = '503 Service Unavailable';
+const BAD_REQUEST_STATUS_CODE = 400;
+const ALL_NET_INTERFACES = '0.0.0.0';
 
 export class LibAuthServer {
   #debuglog = null;
@@ -35,7 +38,11 @@ export class LibAuthServer {
     }
 
     this.#debuglog = util.debuglog(this.constructor.name);
+    this.#debuglog(`this.constructor.name: ${this.constructor.name}`);
+
     this.#config = Object.freeze({ ...config });
+    this.#debuglog('#config:', this.#config);
+
     this.#macaroonsBuilder = libmacaroons.MacaroonsBuilder;
 
     this.start = this.start.bind(this);
@@ -47,8 +54,20 @@ export class LibAuthServer {
       return Promise.resolve();
     }
 
-    this.#libRedisAdapter = new LibRedisAdapter();
-    this.#redisInstanceReader = await this.#libRedisAdapter.newInstance(this.#config.redis, null);
+    try {
+      this.#libRedisAdapter = new LibRedisAdapter();
+      this.#debuglog('start.libRedisAdapter', this.#libRedisAdapter);
+
+      this.#redisInstanceReader = await this.#libRedisAdapter.newInstance(this.#config.redis, null);
+      this.#redisInstanceReader.on('connected', () => {
+        this.#debuglog('redisInstanceReader.connected');
+      });
+      this.#debuglog('start.redisInstanceReader', this.#redisInstanceReader);
+    } catch (redisError) {
+      this.#debuglog(redisError.message);
+
+      throw redisError;
+    }
 
     this.#server = uWS
       .App({})
@@ -59,25 +78,56 @@ export class LibAuthServer {
 
         res.aborted = false;
 
-        const authorizationHeader = req.getHeader('authorization') ?? 'N/A';
-        const url = req.getUrl();
-        const deserializedAccessToken = this.#macaroonsBuilder.deserialize(authorizationHeader);
-        const {
-          identifier,
-        } = deserializedAccessToken;
-        const [uid, secretKey] = await retrieveAccessTokenInfoByIdentifier(identifier, this.#redisInstanceReader);
-        const actionType = ActionTypes.READ;
-        const actionObject = url;
+        this.#debuglog(this.#redisInstanceReader);
 
-        const isTokenValid = verifyAccessToken(
-          libmacaroons, deserializedAccessToken, uid, Buffer.from(secretKey, BufferToStringEncoding), actionType, actionObject,
-        );
-        const status = isTokenValid === true ? OK_STATUS : UNAUTHORIZED_STATUS;
+        if (this.#redisInstanceReader === null) {
+          this.#debuglog('NOT_READY_STATUS:', NOT_READY_STATUS);
 
-        res.writeStatus(status);
+          res.writeStatus(NOT_READY_STATUS);
 
-        if (res.aborted === false) {
           return res.end();
+        }
+
+        this.#debuglog('.get /*');
+
+        try {
+          const authorizationHeader = req.getHeader('authorization') ?? 'N/A';
+          this.#debuglog('.get.authorizationHeader', authorizationHeader);
+
+          const url = req.getUrl();
+          this.#debuglog('.get.url', url);
+
+          const deserializedAccessToken = this.#macaroonsBuilder.deserialize(authorizationHeader);
+          this.#debuglog('.get.deserializedAccessToken', deserializedAccessToken);
+
+          const {
+            identifier,
+          } = deserializedAccessToken;
+          this.#debuglog('.get.identifier', identifier);
+
+          const [uid, secretKey] = await retrieveAccessTokenInfoByIdentifier(identifier, this.#redisInstanceReader);
+          this.#debuglog('.get.retrieveAccessTokenInfoByIdentifier', uid, secretKey);
+
+          const actionType = ActionTypes.READ;
+          const actionObject = url;
+
+          const isTokenValid = verifyAccessToken(
+            libmacaroons, deserializedAccessToken, uid, Buffer.from(secretKey, BufferToStringEncoding), actionType, actionObject,
+          );
+          this.#debuglog('.get.isTokenValid', isTokenValid);
+
+          const status = isTokenValid === true ? OK_STATUS : UNAUTHORIZED_STATUS;
+          this.#debuglog('.get.status', status);
+
+          res.writeStatus(status);
+
+          if (res.aborted === false) {
+            return res.end();
+          }
+        } catch (error) {
+          this.#debuglog(error);
+
+          res.writeStatus(BAD_REQUEST_STATUS_CODE).end(error.message || 'Bad Request');
         }
 
         return this;
@@ -89,7 +139,9 @@ export class LibAuthServer {
 
         return res.end();
       })
-      .listen(this.#config.port, (handle) => {
+      .listen(ALL_NET_INTERFACES, this.#config.port, (handle) => {
+        this.#debuglog('.listen', ALL_NET_INTERFACES, this.#config.port, handle);
+
         if (!handle) {
           throw new Error(`failed to listen on port ${this.#config.port}`);
         }
@@ -103,6 +155,8 @@ export class LibAuthServer {
   }
 
   async stop() {
+    this.#debuglog('.stop');
+
     if (this.#handle === null) {
       return Promise.resolve();
     }

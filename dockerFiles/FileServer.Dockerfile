@@ -11,6 +11,8 @@ RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
       build-essential \
       procps \
       nano \
+      iputils-ping \
+      net-tools \
     && rm -rf /var/lib/apt/lists/*
 
 FROM os-base as build-nginx
@@ -81,16 +83,16 @@ RUN set -x \
     && chown -R nginx:nginx /usr/local/nginx
 
 FROM add-nginx-user AS clean-up
-RUN apt-get purge --auto-remove --assume-yes \
-      curl \
-      build-essential \
-      procps \
-      nano \
-    && apt-get clean \
-    && apt-get autoclean
+# RUN apt-get purge --auto-remove --assume-yes \
+#       curl \
+#       build-essential \
+#       procps \
+#       nano \
+#     && apt-get clean \
+#     && apt-get autoclean
 
 FROM clean-up AS file-server
-EXPOSE 80
+EXPOSE 8080
 STOPSIGNAL SIGTERM
 CMD /usr/local/nginx/nginx -c /usr/local/nginx/nginx.conf
 

@@ -14,6 +14,10 @@ RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
       procps \
       gnupg2 \
       git \
+      iputils-ping \
+      net-tools \
+      nano \
+      telnet \
     && apt-get purge --assume-yes --autoremove \
     && apt-get clean --assume-yes \
     && rm -rf /var/lib/apt/lists/*
@@ -34,7 +38,7 @@ RUN curl --anyauth --progress-bar --http2 --retry 0 --tcp-fastopen https://get.v
 
 FROM install-volta AS install-node-pnpm-pm2
 ARG node_version=15.6.0
-ARG pnpm_version=5.15.1
+ARG pnpm_version=5.15.2
 ARG pm2_version=4.5.1
 ENV PATH=~/.volta/bin:$PATH
 RUN volta install node@$node_version \
@@ -54,19 +58,20 @@ RUN pnpm --recursive install
 
 FROM copy-project-files AS clean-up
 USER root
-RUN apt-get purge --auto-remove --assume-yes \
-      curl \
-      build-essential \
-      procps \
-    && apt-get clean \
-    && apt-get autoclean
+# RUN apt-get purge --auto-remove --assume-yes \
+#       curl \
+#       build-essential \
+#       procps \
+#     && apt-get clean \
+#     && apt-get autoclean
 
 FROM clean-up as AuthServer
 USER pm2
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
-EXPOSE 80
+EXPOSE 8080
 ENV PATH=~/.volta:~/.volta/bin:$PATH
 ENV NODE_ENV=production
 WORKDIR /home/pm2/feather/sources/back-end/servers/AuthServer
+STOPSIGNAL SIGTERM
 CMD pm2-runtime start ./ecosystem.config.js
