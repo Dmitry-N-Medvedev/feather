@@ -37,21 +37,33 @@ describe('LibRedisAdapter', () => {
   };
 
   before(async () => {
-    libRedisAdapter = new LibRedisAdapter();
+    try {
+      libRedisAdapter = new LibRedisAdapter();
 
-    specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
+      specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
+    } catch (redisError) {
+      debuglog(redisError.message);
+
+      throw redisError;
+    }
+
+    return Promise.resolve();
   });
 
   after(async () => {
-    await cleanUpData();
+    try {
+      await cleanUpData();
 
-    libRedisAdapter.shutDownInstance(specRedisInstance);
+      libRedisAdapter.shutDownInstance(specRedisInstance);
 
-    specRedisInstance = null;
+      await libRedisAdapter.destroy();
+      specRedisInstance = null;
+      libRedisAdapter = null;
+    } catch (redisError) {
+      debuglog(redisError.message);
+    }
 
-    await libRedisAdapter.destroy();
-
-    libRedisAdapter = null;
+    return Promise.resolve();
   });
 
   it('should newInstance and shutDownInstance', async () => {
@@ -60,7 +72,7 @@ describe('LibRedisAdapter', () => {
     expect(redisInstance).to.exist;
     expect(redisInstance.ready).to.be.true;
 
-    libRedisAdapter.shutDownInstance(redisInstance);
+    await libRedisAdapter.shutDownInstance(redisInstance);
 
     expect(redisInstance.destroyed).to.be.true;
   });

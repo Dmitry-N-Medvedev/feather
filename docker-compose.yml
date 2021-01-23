@@ -1,0 +1,71 @@
+version: "3.9"
+
+networks:
+  feather-net:
+    name: feather-net
+    driver: bridge
+    driver_opts:
+      # com.docker.network.bridge.name UP TO 15 CHARACTERS LONG ONLY
+      com.docker.network.bridge.name: "feather-net-B"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.host_binding_ipv4: "172.20.0.1"
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/16"
+          gateway: "172.20.0.1"
+services:
+  auth-server:
+    container_name: auth-server
+    build:
+      context: .
+      dockerfile: dockerFiles/AuthServer.Dockerfile
+      network: host
+    expose:
+      - "80"
+    environment:
+      NODE_ENV: 'development'
+      NODE_DEBUG: 'AuthServer*,LibAuthServer*'
+      UWS_PORT: "80"
+      REDIS_HOST: "redis-server"
+      REDIS_PORT: "6379"
+    depends_on:
+      - redis-server
+    networks:
+      - feather-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  file-server:
+    container_name: file-server
+    build:
+      context: .
+      dockerfile: dockerFiles/FileServer.Dockerfile
+      network: host
+    ports:
+      - 80:8080
+    depends_on:
+      - auth-server
+      - redis-server
+    networks:
+      - feather-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  redis-server:
+    container_name: redis-server
+    build:
+      context: .
+      dockerfile: dockerFiles/Redis.Dockerfile
+      network: host
+    expose:
+      - "6379"
+    networks:
+      - feather-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure

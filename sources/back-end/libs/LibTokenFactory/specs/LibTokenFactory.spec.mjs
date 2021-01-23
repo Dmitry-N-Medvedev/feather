@@ -35,6 +35,10 @@ const {
   expect,
 } = chai;
 
+mocha.Runner.prototype.uncaught = (err) => {
+  debuglog('UNCAUGHT ERROR', err);
+};
+
 describe('LibTokenFactory', () => {
   const LibTokenFactoryConfig = Object.freeze({
     ctx: nanoid(8), // ctx must always by 8 characters long
@@ -71,13 +75,14 @@ describe('LibTokenFactory', () => {
   before(async () => {
     libRedisAdapter = new LibRedisAdapter();
     specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
-    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
 
-    return libTokenFactory.start();
+    // eslint-disable-next-line no-return-await
+    return await libTokenFactory.start();
   });
 
   after(async () => {
-    await deleteKeys();
+    deleteKeys();
 
     if (libTokenFactory !== null) {
       await libTokenFactory.stop();
@@ -86,8 +91,6 @@ describe('LibTokenFactory', () => {
     if (libRedisAdapter !== null) {
       await libRedisAdapter.destroy();
     }
-
-    return Promise.resolve();
   });
 
   it('should issueAccountToken', async () => {

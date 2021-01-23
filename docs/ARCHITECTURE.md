@@ -97,7 +97,7 @@ acl: 0, // ACL mask. It's kind of rights (functions) a User is allowed to execut
 
 - Back-end
   - [NodeJs](https://nodejs.org/en/download/) `15.6.0` (use `Volta` to install it)
-  - [PNPM](https://pnpm.js.org/en/motivation) `5.15.1` (use `Volta` to install it)
+  - [PNPM](https://pnpm.js.org/en/motivation) `5.15.3` (use `Volta` to install it)
   - [Redis](https://redis.io/download) `6.0.9`
   - [Volta](https://volta.sh/) `1.0.0` (use it instead of `nvm`)
   - [µWebSockets.js](https://github.com/uNetworking/uWebSockets.js) `18.12.0` (`http`/`websocket` server instead of `express.js` et al), I do urge you to go see [motivation and goals](https://github.com/uNetworking/uWebSockets/blob/master/misc/READMORE.md) behind it.

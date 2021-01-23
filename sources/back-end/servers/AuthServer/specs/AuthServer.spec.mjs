@@ -23,6 +23,9 @@ import {
 import {
   Locations,
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
+  LibRedisAdapter,
+} from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
 
 import {
   startAuthServer,
@@ -70,6 +73,8 @@ describe('Auth Server', () => {
     });
     dotenv.config();
     node = await which('node');
+    debuglog('node resolved to', node);
+
     file = resolve('./index.mjs');
 
     handle = execa(node, [file, '--trace-warnings'], {
@@ -83,7 +88,7 @@ describe('Auth Server', () => {
     handle.all.pipe(logger);
     await startAuthServer(logger);
 
-    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, new LibRedisAdapter());
     await libTokenFactory.start();
     accountToken = await libTokenFactory.issueAccountToken();
 
@@ -111,7 +116,7 @@ describe('Auth Server', () => {
     logger = null;
   });
 
-  it('should resolve node', async () => {
+  it.only('should resolve node', async () => {
     expect(node).to.exist;
   });
 
@@ -122,7 +127,7 @@ describe('Auth Server', () => {
   });
 
   // eslint-disable-next-line prefer-arrow-callback
-  it.only('should succeed to authenticate a GET request', async function succeedAuth() {
+  it('should succeed to authenticate a GET request', async function succeedAuth() {
     const filePath = `${nanoid(16)}.${nanoid(3)}`;
     const forAction = Object.freeze({
       type: ActionTypes.READ,

@@ -15,6 +15,9 @@ import {
   Locations,
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
 import {
+  LibRedisAdapter,
+} from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
+import {
   LibAuthServer,
 } from '../LibAuthServer.mjs';
 
@@ -44,6 +47,7 @@ describe('LibAuthServer', () => {
     port: 9090,
     redis: LibTokenFactoryConfig.redis,
   });
+  let libRedisAdapter = null;
   let libTokenFactory = null;
   let libAuthServer = null;
   let client = null;
@@ -54,12 +58,12 @@ describe('LibAuthServer', () => {
   const HEALTH_CHECK_OK = AUTHENTICATION_OK;
 
   before(async () => {
-    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
+    libRedisAdapter = new LibRedisAdapter();
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
     await libTokenFactory.start();
     accountToken = await libTokenFactory.issueAccountToken();
 
     libAuthServer = new LibAuthServer(LibAuthServerConfig);
-
     await libAuthServer.start();
 
     client = got.extend({
@@ -70,11 +74,16 @@ describe('LibAuthServer', () => {
   after(async () => {
     client = null;
 
-    await libAuthServer.stop();
-    libAuthServer = null;
+    if (libAuthServer !== null) {
+      await libAuthServer.stop();
 
-    await libTokenFactory.stop();
-    libTokenFactory = null;
+      libAuthServer = null;
+    }
+
+    if (libTokenFactory !== null) {
+      await libTokenFactory.stop();
+      libTokenFactory = null;
+    }
     accountToken = null;
   });
 

@@ -4,7 +4,7 @@
   "description": "[bin] Auth Server",
   "engines": {
     "node": "=15.6.0",
-    "pnpm": "=5.15.1"
+    "pnpm": "=5.15.3"
   },
   "engineStrict": true,
   "volta": {
@@ -23,7 +23,8 @@
   "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@dmitry-n-medvedev/libauthserver": "workspace:^0.0.0"
+    "@dmitry-n-medvedev/libauthserver": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libredisadapter": "workspace:^0.0.0"
   },
   "devDependencies": {
     "@dmitry-n-medvedev/libcommon": "workspace:^0.0.0",

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-compose --log-level DEBUG build --force-rm

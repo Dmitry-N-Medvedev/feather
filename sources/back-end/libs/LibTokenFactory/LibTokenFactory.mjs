@@ -14,9 +14,6 @@ import {
   createAccessToken,
 } from '@dmitry-n-medvedev/libtoken/createAccessToken.mjs';
 import {
-  LibRedisAdapter,
-} from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
-import {
   Locations,
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
 import {
@@ -55,15 +52,19 @@ export class LibTokenFactory {
   #redisInstanceWriter = null;
   #debuglog = null;
 
-  constructor(config = null) {
+  constructor(config = null, libRedisAdapter = null) {
     if (config === null) {
       throw new ReferenceError('config is undefined');
     }
 
-    this.#debuglog = util.debuglog('LibTokenFactory');
+    if (libRedisAdapter === null) {
+      throw new ReferenceError('libRedisAdapter is undefined');
+    }
+
+    this.#debuglog = util.debuglog(this.constructor.name);
 
     this.#config = Object.freeze({ ...config });
-    this.#libRedisAdapter = new LibRedisAdapter();
+    this.#libRedisAdapter = libRedisAdapter;
   }
 
   async start() {
@@ -92,8 +93,8 @@ export class LibTokenFactory {
     this.#config = null;
     this.#macaroonsBuilder = null;
     this.#isRunning = false;
-    this.#libRedisAdapter.shutDownInstance(this.#redisInstanceWriter);
-    await this.#libRedisAdapter.destroy();
+    // this.#libRedisAdapter.shutDownInstance(this.#redisInstanceWriter);
+    // await this.#libRedisAdapter.destroy();
     this.#redisInstanceWriter = null;
 
     return Promise.resolve();
@@ -111,6 +112,10 @@ export class LibTokenFactory {
       uid,
     };
     const FLAGS = 0 | RedisAccountTokenFlags.IS_OK;
+
+    if (this.#redisInstanceWriter.ready === false) {
+      return Promise.resolve(null);
+    }
 
     return (await Promise.all([
       this.#redisInstanceWriter.rawCallAsync([

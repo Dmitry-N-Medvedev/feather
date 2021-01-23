@@ -2,9 +2,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 FROM debian:buster-slim AS os-base
 SHELL ["/bin/bash", "-c"]
-RUN apt-get --assume-yes --no-install-recommends update && \
-    apt-get --assume-yes --no-install-recommends upgrade && \
-    apt-get --assume-yes --no-install-recommends install \
+RUN apt-get --assume-yes --no-install-recommends --no-install-suggests update \
+    && apt-get --assume-yes --no-install-recommends --no-install-suggests upgrade \
+    && apt-get --assume-yes --no-install-recommends --no-install-suggests install \
       ca-certificates \
       curl \
       apt-utils \
@@ -12,9 +12,15 @@ RUN apt-get --assume-yes --no-install-recommends update && \
       build-essential \
       apt-transport-https \
       procps \
+      gnupg2 \
       git \
-      gnupg2 && \
-    rm -rf /var/lib/apt/lists/*
+      iputils-ping \
+      net-tools \
+      nano \
+      telnet \
+    && apt-get purge --assume-yes --autoremove \
+    && apt-get clean --assume-yes \
+    && rm -rf /var/lib/apt/lists/*
 
 FROM os-base AS add-pm2-user
 RUN useradd \
@@ -28,19 +34,17 @@ RUN useradd \
 
 FROM add-pm2-user AS install-volta
 USER pm2
-ENV HOME=/home/pm2
-COPY ./dockerConfigs/curl/.curlrc /home/pm2/
-RUN curl https://get.volta.sh | bash
+RUN curl --anyauth --progress-bar --http2 --retry 0 --tcp-fastopen https://get.volta.sh | bash
 
 FROM install-volta AS install-node-pnpm-pm2
 ARG node_version=15.6.0
-ARG pnpm_version=5.15.1
+ARG pnpm_version=5.15.3
 ARG pm2_version=4.5.1
 ENV PATH=~/.volta/bin:$PATH
-RUN volta install node@$node_version && \
-    volta install pnpm@$pnpm_version && \
-    volta install pm2@$pm2_version && \
-    pnpm config set store-dir ~/.pnpm-store
+RUN volta install node@$node_version \
+    && volta install pnpm@$pnpm_version \
+    && volta install pm2@$pm2_version \
+    && pnpm config set store-dir ~/.pnpm-store
 
 FROM install-node-pnpm-pm2 as copy-project-files
 ARG node_version=15.6.0
@@ -52,17 +56,22 @@ USER pm2
 ENV PATH=$PATH:/home/pm2/.volta/tools/image/node/$node_version/bin
 RUN pnpm --recursive install
 
-RUN pm2 start \
-  --cwd ./sources/back-end/servers/AuthServer/ \
-  ./sources/back-end/servers/AuthServer/ecosystem.config.js && \
-  pm2 save && \
-  pm2 stop all
+FROM copy-project-files AS clean-up
+USER root
+# RUN apt-get purge --auto-remove --assume-yes \
+#       curl \
+#       build-essential \
+#       procps \
+#     && apt-get clean \
+#     && apt-get autoclean
 
-FROM copy-project-files as AuthServer
+FROM clean-up as AuthServer
+USER pm2
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
-EXPOSE 80
+EXPOSE 8080
 ENV PATH=~/.volta:~/.volta/bin:$PATH
 ENV NODE_ENV=production
 WORKDIR /home/pm2/feather/sources/back-end/servers/AuthServer
+STOPSIGNAL SIGTERM
 CMD pm2-runtime start ./ecosystem.config.js
