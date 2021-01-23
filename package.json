@@ -4,7 +4,7 @@
   "description": "insurance resolving system",
   "engines": {
     "node": "=15.6.0",
-    "pnpm": "=5.15.2"
+    "pnpm": "=5.15.3"
   },
   "engineStrict": true,
   "volta": {

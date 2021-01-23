@@ -38,7 +38,7 @@ RUN curl --anyauth --progress-bar --http2 --retry 0 --tcp-fastopen https://get.v
 
 FROM install-volta AS install-node-pnpm-pm2
 ARG node_version=15.6.0
-ARG pnpm_version=5.15.2
+ARG pnpm_version=5.15.3
 ARG pm2_version=4.5.1
 ENV PATH=~/.volta/bin:$PATH
 RUN volta install node@$node_version \
