@@ -66,4 +66,6 @@ describe(LibTokenServer.constructor.name, () => {
 
     expect(message.token.length > 0).to.be.true;
   });
+
+  // FIXME: remove this when all tests are ready
 });
