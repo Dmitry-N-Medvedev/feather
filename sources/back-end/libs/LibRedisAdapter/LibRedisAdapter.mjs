@@ -31,32 +31,24 @@ const connectToRedis = async (redisInstance = null) => {
     throw new ReferenceError('redisInstance is undefined');
   }
 
-  try {
-    redisInstance.connect();
+  redisInstance.connect();
 
-    await Promise.all([
-      eventPromise('ready', redisInstance),
-      eventPromise('connect', redisInstance),
-    ]);
-  } catch (redisError) {
-    debuglog(redisError.message);
-  }
+  await Promise.all([
+    eventPromise('ready', redisInstance),
+    eventPromise('connect', redisInstance),
+  ]);
 };
 
-const disconnectFromRedis = (redisInstance = null) => {
+const disconnectFromRedis = async (redisInstance = null) => {
   if (redisInstance === null) {
     throw new ReferenceError('redisInstance is undefined');
   }
 
-  try {
-    redisInstance.end();
+  debuglog('disconnectFromRedis:', Array.isArray(redisInstance));
+  redisInstance.end();
 
-    return eventPromise('end', redisInstance);
-  } catch (redisError) {
-    debuglog(redisError);
-
-    throw redisError;
-  }
+  // eslint-disable-next-line no-return-await
+  return await eventPromise('end', redisInstance);
 };
 
 export class LibRedisAdapter extends EventEmitter {
@@ -69,14 +61,8 @@ export class LibRedisAdapter extends EventEmitter {
   }
 
   async destroy() {
-    for await (const redisInstance of this.#instances) {
-      try {
-        debuglog(`shutting down ${redisInstance[Symbol.for(SYMBOL_NAME)].id} redis instance`);
-
-        await this.shutDownInstance(redisInstance);
-      } catch (anyError) {
-        debuglog(anyError.message);
-      }
+    for await (const [, redisInstance] of this.#instances) {
+      await this.shutDownInstance(redisInstance);
     }
 
     this.#instances = null;
@@ -118,7 +104,7 @@ export class LibRedisAdapter extends EventEmitter {
     debuglog('handleInstanceEnd');
   }
 
-  #initRedisInstanceHandlers = (redisInstance = null, clientName) => {
+  #initRedisInstanceHandlers = (redisInstance = null, clientName = null) => {
     redisInstance.addListener('ready', this.#handleInstanceReady, { once: true });
     redisInstance.on('connect', () => {
       this.#handleInstanceConnected(redisInstance, clientName);
@@ -144,47 +130,41 @@ export class LibRedisAdapter extends EventEmitter {
       clientName = nanoid(5);
     }
 
-    try {
-      const connectionConfig = Object.freeze({
-        ...config,
-        ...DEFAULT_REDIS_CONFIG,
-      });
+    const connectionConfig = Object.freeze({
+      ...config,
+      ...DEFAULT_REDIS_CONFIG,
+    });
 
-      debuglog('new Redis:', JSON.stringify(connectionConfig, null, 2));
+    debuglog('new Redis:', JSON.stringify(connectionConfig, null, 2));
 
-      const redisInstance = new Redis(connectionConfig);
+    const redisInstance = new Redis(connectionConfig);
 
-      this.#initRedisInstanceHandlers(redisInstance, clientName);
+    this.#initRedisInstanceHandlers(redisInstance, clientName);
 
-      await connectToRedis(redisInstance);
+    await connectToRedis(redisInstance);
 
-      redisInstance[Symbol.for(SYMBOL_NAME)] = Object.freeze({
-        id: nanoid(8),
-      });
+    redisInstance[Symbol.for(SYMBOL_NAME)] = Object.freeze({
+      id: nanoid(8),
+    });
 
-      this.#instances.set((redisInstance[Symbol.for(SYMBOL_NAME)]).id, redisInstance);
+    this.#instances.set((redisInstance[Symbol.for(SYMBOL_NAME)]).id, redisInstance);
 
-      return redisInstance;
-    } catch (redisError) {
-      debuglog(redisError);
-
-      throw redisError;
-    }
+    return redisInstance;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async shutDownInstance(redisInstance = null) {
     if (redisInstance === null) {
       throw new ReferenceError('redisInstance is undefined');
     }
 
+    redisInstance.removeAllListeners();
+
     if (this.#instances.delete(redisInstance[Symbol.for(SYMBOL_NAME)].id) === false) {
-      throw new ReferenceError('no redis instance found for the given instanceId');
+      throw new ReferenceError(`no redis instance found for the given instanceId: "${redisInstance[Symbol.for(SYMBOL_NAME)].id}"`);
     }
 
-    try {
-      disconnectFromRedis(redisInstance);
-    } catch (redisError) {
-      debuglog(redisError.message);
-    }
+    // eslint-disable-next-line no-return-await
+    return await disconnectFromRedis(redisInstance);
   }
 }

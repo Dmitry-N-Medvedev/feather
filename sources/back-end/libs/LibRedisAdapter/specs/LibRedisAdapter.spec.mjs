@@ -72,7 +72,7 @@ describe('LibRedisAdapter', () => {
     expect(redisInstance).to.exist;
     expect(redisInstance.ready).to.be.true;
 
-    libRedisAdapter.shutDownInstance(redisInstance);
+    await libRedisAdapter.shutDownInstance(redisInstance);
 
     expect(redisInstance.destroyed).to.be.true;
   });

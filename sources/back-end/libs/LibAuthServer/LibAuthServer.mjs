@@ -38,10 +38,9 @@ export class LibAuthServer {
     }
 
     this.#debuglog = util.debuglog(this.constructor.name);
-    this.#debuglog(`this.constructor.name: ${this.constructor.name}`);
 
     this.#config = Object.freeze({ ...config });
-    this.#debuglog('#config:', this.#config);
+    this.#debuglog('config:', this.#config);
 
     this.#macaroonsBuilder = libmacaroons.MacaroonsBuilder;
 
@@ -54,20 +53,11 @@ export class LibAuthServer {
       return Promise.resolve();
     }
 
-    try {
-      this.#libRedisAdapter = new LibRedisAdapter();
-      this.#debuglog('start.libRedisAdapter', this.#libRedisAdapter);
-
-      this.#redisInstanceReader = await this.#libRedisAdapter.newInstance(this.#config.redis, null);
-      this.#redisInstanceReader.on('connected', () => {
-        this.#debuglog('redisInstanceReader.connected');
-      });
-      this.#debuglog('start.redisInstanceReader', this.#redisInstanceReader);
-    } catch (redisError) {
-      this.#debuglog(redisError.message);
-
-      throw redisError;
-    }
+    this.#libRedisAdapter = new LibRedisAdapter();
+    this.#redisInstanceReader = await this.#libRedisAdapter.newInstance(this.#config.redis, null);
+    this.#redisInstanceReader.on('connected', () => {
+      this.#debuglog('redisInstanceReader.connected');
+    });
 
     this.#server = uWS
       .App({})

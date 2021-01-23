@@ -21,9 +21,7 @@
   ],
   "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
   "license": "MIT",
-  "publishConfig": {
-    "registry": "http://localhost:4873"
-  },
+  "publishConfig": {},
   "dependencies": {},
   "devDependencies": {
     "c8": "^7.4.0",

@@ -15,6 +15,9 @@ import {
   Locations,
 } from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
 import {
+  LibRedisAdapter,
+} from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
+import {
   LibAuthServer,
 } from '../LibAuthServer.mjs';
 
@@ -44,6 +47,7 @@ describe('LibAuthServer', () => {
     port: 9090,
     redis: LibTokenFactoryConfig.redis,
   });
+  let libRedisAdapter = null;
   let libTokenFactory = null;
   let libAuthServer = null;
   let client = null;
@@ -54,42 +58,33 @@ describe('LibAuthServer', () => {
   const HEALTH_CHECK_OK = AUTHENTICATION_OK;
 
   before(async () => {
-    try {
-      libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig);
-      await libTokenFactory.start();
-      accountToken = await libTokenFactory.issueAccountToken();
+    libRedisAdapter = new LibRedisAdapter();
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
+    await libTokenFactory.start();
+    accountToken = await libTokenFactory.issueAccountToken();
 
-      libAuthServer = new LibAuthServer(LibAuthServerConfig);
-      await libAuthServer.start();
+    libAuthServer = new LibAuthServer(LibAuthServerConfig);
+    await libAuthServer.start();
 
-      client = got.extend({
-        prefixUrl: `http://localhost:${LibAuthServerConfig.port}`,
-      });
-    } catch (error) {
-      debuglog(error);
-    }
-
-    return Promise.resolve();
+    client = got.extend({
+      prefixUrl: `http://localhost:${LibAuthServerConfig.port}`,
+    });
   });
 
   after(async () => {
-    try {
-      client = null;
+    client = null;
 
-      if (libAuthServer !== null) {
-        await libAuthServer.stop();
+    if (libAuthServer !== null) {
+      await libAuthServer.stop();
 
-        libAuthServer = null;
-      }
-
-      if (libTokenFactory !== null) {
-        await libTokenFactory.stop();
-        libTokenFactory = null;
-      }
-      accountToken = null;
-    } catch (error) {
-      debuglog(error);
+      libAuthServer = null;
     }
+
+    if (libTokenFactory !== null) {
+      await libTokenFactory.stop();
+      libTokenFactory = null;
+    }
+    accountToken = null;
   });
 
   it('should succeed to authenticate a GET request', async () => {

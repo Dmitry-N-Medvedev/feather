@@ -3,12 +3,19 @@ import dotenv from 'dotenv';
 import {
   LibAuthServer,
 } from '@dmitry-n-medvedev/libauthserver';
+import {
+  LibRedisAdapter,
+} from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
+
+process.exitCode = 1;
 
 const debuglog = util.debuglog('AuthServer');
 let libAuthServer = null;
 
 const handleShutdownSignal = async (signal) => {
-  debuglog('handleShutdownSignal', signal);
+  process.exitCode = 0;
+
+  debuglog('handleShutdownSignal:', signal);
 
   process.removeAllListeners();
 
@@ -25,11 +32,23 @@ const handleShutdownSignal = async (signal) => {
   process.exit(0);
 };
 
+const handleUncaughtException = (error) => {
+  process.removeAllListeners();
+
+  debuglog('handleUncaughtException:', error);
+};
+
+const handleUnhandledRejection = (reason, promise) => {
+  process.removeAllListeners();
+
+  debuglog('handleUnhandledRejection at', promise, 'with reason', reason);
+};
+
 process.on('SIGINT', handleShutdownSignal);
 process.on('SIGTERM', handleShutdownSignal);
 process.on('SIGHUP', handleShutdownSignal);
-process.on('uncaughtException', handleShutdownSignal);
-process.on('unhandledRejection', handleShutdownSignal);
+process.on('uncaughtException', handleUncaughtException);
+process.on('unhandledRejection', handleUnhandledRejection);
 
 (async () => {
   debuglog('starting...');
@@ -46,7 +65,7 @@ process.on('unhandledRejection', handleShutdownSignal);
 
   debuglog('LibAuthServerConfig:', LibAuthServerConfig);
 
-  libAuthServer = new LibAuthServer(LibAuthServerConfig);
+  libAuthServer = new LibAuthServer(LibAuthServerConfig, new LibRedisAdapter());
 
   await libAuthServer.start();
 })();

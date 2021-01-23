@@ -93,8 +93,8 @@ export class LibTokenFactory {
     this.#config = null;
     this.#macaroonsBuilder = null;
     this.#isRunning = false;
-    this.#libRedisAdapter.shutDownInstance(this.#redisInstanceWriter);
-    await this.#libRedisAdapter.destroy();
+    // this.#libRedisAdapter.shutDownInstance(this.#redisInstanceWriter);
+    // await this.#libRedisAdapter.destroy();
     this.#redisInstanceWriter = null;
 
     return Promise.resolve();

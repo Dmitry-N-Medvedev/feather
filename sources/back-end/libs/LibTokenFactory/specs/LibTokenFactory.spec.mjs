@@ -73,43 +73,24 @@ describe('LibTokenFactory', () => {
   };
 
   before(async () => {
-    const to = setTimeout(() => Promise.resolve(), 500);
+    libRedisAdapter = new LibRedisAdapter();
+    specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
+    libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
 
-    try {
-      libRedisAdapter = new LibRedisAdapter();
-      specRedisInstance = await libRedisAdapter.newInstance(LibRedisAdapterConfig, SpecRedisInstanceName);
-      libTokenFactory = new LibTokenFactory(LibTokenFactoryConfig, libRedisAdapter);
-
-      await libTokenFactory.start();
-    } catch (error) {
-      debuglog(error.message);
-    } finally {
-      clearTimeout(to);
-    }
-
-    return Promise.resolve();
+    // eslint-disable-next-line no-return-await
+    return await libTokenFactory.start();
   });
 
   after(async () => {
-    const to = setTimeout(() => Promise.resolve(), 100);
+    deleteKeys();
 
-    try {
-      deleteKeys();
-
-      if (libTokenFactory !== null) {
-        await libTokenFactory.stop();
-      }
-
-      if (libRedisAdapter !== null) {
-        await libRedisAdapter.destroy();
-      }
-    } catch (error) {
-      debuglog(error);
-    } finally {
-      clearTimeout(to);
+    if (libTokenFactory !== null) {
+      await libTokenFactory.stop();
     }
 
-    return Promise.resolve();
+    if (libRedisAdapter !== null) {
+      await libRedisAdapter.destroy();
+    }
   });
 
   it('should issueAccountToken', async () => {
