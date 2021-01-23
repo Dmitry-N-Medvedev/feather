@@ -121,12 +121,12 @@ export class LibTokenFactory {
       this.#redisInstanceWriter.rawCallAsync([
         'HSET',
         identifier,
-        RedisAccountTokenFields.USER_ID,
+        RedisAccountTokenFields.USER_ID.toString(),
         uid,
-        RedisAccountTokenFields.SECRET_KEY,
-        secretKey,
-        RedisAccountTokenFields.FLAGS,
-        FLAGS,
+        RedisAccountTokenFields.SECRET_KEY.toString(),
+        Buffer.from(secretKey).toString(BufferToStringEncoding),
+        RedisAccountTokenFields.FLAGS.toString(),
+        FLAGS.toString(),
       ]),
       createAccountToken(this.#macaroonsBuilder, tokenSettings),
     ]))[1] ?? null;
