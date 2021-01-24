@@ -23,7 +23,9 @@
   "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@dmitry-n-medvedev/libcommon": "workspace:^0.0.0",
     "@dmitry-n-medvedev/libredisadapter": "workspace:^0.0.0",
+    "@dmitry-n-medvedev/libtoken": "workspace:^0.0.0",
     "@dmitry-n-medvedev/libtokenfactory": "workspace:^0.0.0"
   },
   "devDependencies": {

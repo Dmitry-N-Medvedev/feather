@@ -6,6 +6,12 @@ import {
   nanoid,
 } from 'nanoid';
 import {
+  ActionTypes,
+} from '@dmitry-n-medvedev/libtoken/constants/ActionTypes.mjs';
+import {
+  Locations,
+} from '@dmitry-n-medvedev/libcommon/constants/Locations.mjs';
+import {
   LibTokenServer,
 } from '../LibTokenServer.mjs';
 
@@ -48,6 +54,8 @@ describe(LibTokenServer.constructor.name, () => {
 
     client = got.extend({
       prefixUrl: `http://localhost:${LibTokenServerConfig.uws.port}`,
+      http2: true,
+      throwHttpErrors: false,
     });
   });
 
@@ -58,13 +66,37 @@ describe(LibTokenServer.constructor.name, () => {
     client = null;
   });
 
-  it.only('should issueAccountToken', async () => {
-    const { body } = await client('account-token', {});
-    const message = JSON.parse(body);
+  it('should obtain Account and Access tokens', async () => {
+    const forAction = Object.freeze({
+      type: ActionTypes.READ,
+      object: `/${nanoid(5)}.${nanoid(3)}`,
+    });
+    const obtainAccountToken = async () => {
+      const {
+        body,
+      } = await client('account-token', {});
+      return (JSON.parse(body)).token;
+    };
+    const obtainAccessToken = async (action, accountToken) => {
+      const {
+        body,
+      } = await client.post('access-token', {
+        headers: {
+          Authorization: accountToken,
+        },
+        body: JSON.stringify({
+          action: forAction,
+          location: Locations.FILE_SERVER,
+        }),
+      });
 
-    debuglog('message:', message);
+      return JSON.parse(body).token;
+    };
 
-    expect(message.token.length > 0).to.be.true;
+    const accountToken = await obtainAccountToken();
+    const accessToken = await obtainAccessToken(forAction, accountToken);
+
+    expect(accessToken.length > 0).to.be.true;
   });
 
   // FIXME: remove this when all tests are ready
