@@ -112,7 +112,7 @@ describe('Token Server', () => {
     expect(parseInt(LibTokenServerConfig.uws.port, 10)).to.not.be.NaN;
   });
 
-  it.only('should obtain Account and Access tokens', async () => {
+  it('should obtain Account and Access tokens', async () => {
     const forAction = Object.freeze({
       type: ActionTypes.READ,
       object: `/${nanoid(5)}.${nanoid(3)}`,
