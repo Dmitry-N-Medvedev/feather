@@ -14,7 +14,7 @@
   "scripts": {
     "pretest": "pnpm config set shell-script /bin/bash",
     "lint": "./node_modules/.bin/eslint ./ --ext .mjs",
-    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=LibToken* ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
+    "test": "pnpm run lint && cross-env NODE_ENV=test NODE_DEBUG=LibToken*,TokenServer* ./node_modules/.bin/c8 ./node_modules/.bin/mocha -- --trace-warnings",
     "coverage": "./node_modules/.bin/c8 report --reporter=text-lcov > ./coverage/coverage.lcov && ./node_modules/.bin/codecov --disable=gcov"
   },
   "keywords": [
