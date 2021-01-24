@@ -163,7 +163,9 @@ importers:
       node-fetch: ^2.6.1
   sources/back-end/libs/LibTokenServer:
     dependencies:
+      '@dmitry-n-medvedev/libcommon': link:../LibCommon
       '@dmitry-n-medvedev/libredisadapter': link:../LibRedisAdapter
+      '@dmitry-n-medvedev/libtoken': link:../libToken
       '@dmitry-n-medvedev/libtokenfactory': link:../LibTokenFactory
     devDependencies:
       c8: 7.4.0
@@ -182,7 +184,9 @@ importers:
       node-fetch: 2.6.1
       uWebSockets.js: github.com/uNetworking/uWebSockets.js/b4bc740f46f1508c0f342b999db4d1f9dc80deab
     specifiers:
+      '@dmitry-n-medvedev/libcommon': workspace:^0.0.0
       '@dmitry-n-medvedev/libredisadapter': workspace:^0.0.0
+      '@dmitry-n-medvedev/libtoken': workspace:^0.0.0
       '@dmitry-n-medvedev/libtokenfactory': workspace:^0.0.0
       c8: ^7.4.0
       chai: ^4.2.0

@@ -1,15 +1,20 @@
 import util from 'util';
 import uWS from 'uWebSockets.js';
 import {
-  // eslint-disable-next-line no-unused-vars
   LibTokenFactory,
 } from '@dmitry-n-medvedev/libtokenfactory/LibTokenFactory.mjs';
 import {
   LibRedisAdapter,
 } from '@dmitry-n-medvedev/libredisadapter/LibRedisAdapter.mjs';
+import {
+  handleGetAccountToken,
+} from './handlers/handleGetAccountToken.mjs';
+import {
+  handleGetAccessToken,
+} from './handlers/handleGetAccessToken.mjs';
 
 const ALL_NET_INTERFACES = '0.0.0.0';
-const OK_STATUS = '200 OK';
+
 export class LibTokenServer {
   #debuglog = null;
   #config = null;
@@ -45,22 +50,8 @@ export class LibTokenServer {
 
     this.#server = uWS
       .App({})
-      .get('/account-token', async (res) => {
-        res.onAborted(() => {
-          res.aborted = true;
-        });
-
-        res.aborted = false;
-
-        if (res.aborted === false) {
-          res.writeStatus(OK_STATUS).end(JSON.stringify({
-            token: (await this.#libTokenFactory.issueAccountToken()),
-          }));
-        }
-      })
-      // .get('/access-token', (res, req) => {
-
-      // })
+      .get('/account-token', async (res) => handleGetAccountToken(res, this.#libTokenFactory, this.#debuglog))
+      .post('/access-token', async (res, req) => handleGetAccessToken(res, req, this.#libTokenFactory, this.#debuglog))
       .listen(ALL_NET_INTERFACES, this.#config.uws.port, (handle) => {
         this.#debuglog('.listen', ALL_NET_INTERFACES, this.#config.uws.port, handle);
 
