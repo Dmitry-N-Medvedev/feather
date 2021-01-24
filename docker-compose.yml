@@ -38,6 +38,30 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+  token-server:
+    container_name: token-server
+    build:
+      context: .
+      dockerfile: dockerFiles/TokenServer.Dockerfile
+      network: host
+    ports:
+      - "9091:9091"
+    environment:
+      NODE_ENV: 'development'
+      NODE_DEBUG: 'Lib*,Token*'
+      CONTEXT: 'featheri'
+      REDIS_HOST: "redis-server"
+      REDIS_PORT: "6379"
+      TTL: "500"
+      UWS_PORT: "9091"
+    depends_on:
+      - redis-server
+    networks:
+      - feather-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
   file-server:
     container_name: file-server
     build:

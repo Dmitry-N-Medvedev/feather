@@ -289,11 +289,11 @@ importers:
       which: ^2.0.2
   sources/back-end/servers/TokenServer:
     dependencies:
-      '@dmitry-n-medvedev/libtokenserver': link:../../libs/LibTokenServer
-    devDependencies:
       '@dmitry-n-medvedev/libcommon': link:../../libs/LibCommon
       '@dmitry-n-medvedev/libtoken': link:../../libs/libToken
       '@dmitry-n-medvedev/libtokenfactory': link:../../libs/LibTokenFactory
+      '@dmitry-n-medvedev/libtokenserver': link:../../libs/LibTokenServer
+    devDependencies:
       c8: 7.4.0
       chai: 4.2.0
       codecov: 3.8.1
