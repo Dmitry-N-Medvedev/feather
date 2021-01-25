@@ -67,10 +67,15 @@ export class LibTokenServer {
     return undefined;
   }
 
-  // FIXME: not complete
   async stop() {
+    uWS.us_listen_socket_close(this.#handle);
+
     await this.#libTokenFactory.stop();
     await this.#libRedisAdapter.destroy();
+
+    this.#libTokenFactory = null;
+    this.#libRedisAdapter = null;
+    this.#redisInstance = null;
 
     return undefined;
   }

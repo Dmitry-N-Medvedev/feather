@@ -98,6 +98,4 @@ describe(LibTokenServer.constructor.name, () => {
 
     expect(accessToken.length > 0).to.be.true;
   });
-
-  // FIXME: REMOVE TMP DATA FROM REDIS
 });
