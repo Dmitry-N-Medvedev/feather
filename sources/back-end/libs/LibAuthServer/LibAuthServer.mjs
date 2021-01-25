@@ -19,7 +19,7 @@ import {
 
 const OK_STATUS = '200 OK';
 const UNAUTHORIZED_STATUS = '401 Unauthorized';
-const NOT_READY_STATUS = '503 Service Unavailable';
+// const NOT_READY_STATUS = '503 Service Unavailable';
 const BAD_REQUEST_STATUS_CODE = 400;
 const ALL_NET_INTERFACES = '0.0.0.0';
 
@@ -70,44 +70,37 @@ export class LibAuthServer {
 
         this.#debuglog(this.#redisInstanceReader);
 
-        if (this.#redisInstanceReader === null) {
-          this.#debuglog('NOT_READY_STATUS:', NOT_READY_STATUS);
-
-          res.writeStatus(NOT_READY_STATUS);
-
-          return res.end();
-        }
-
-        this.#debuglog('.get /*');
-
         try {
           const authorizationHeader = req.getHeader('authorization') ?? 'N/A';
-          this.#debuglog('.get.authorizationHeader', authorizationHeader);
+          this.#debuglog('.get.authorizationHeader:', authorizationHeader);
+
+          const xOriginalUri = req.getHeader('x-original-uri') ?? 'N/A';
+          this.#debuglog('.get.xOriginalUri:', xOriginalUri);
 
           const url = req.getUrl();
-          this.#debuglog('.get.url', url);
+          this.#debuglog('.get.url:', url);
 
           const deserializedAccessToken = this.#macaroonsBuilder.deserialize(authorizationHeader);
-          this.#debuglog('.get.deserializedAccessToken', deserializedAccessToken);
+          this.#debuglog('.get.deserializedAccessToken:', deserializedAccessToken);
 
           const {
             identifier,
           } = deserializedAccessToken;
-          this.#debuglog('.get.identifier', identifier);
+          this.#debuglog('.get.identifier:', identifier);
 
           const [uid, secretKey] = await retrieveAccessTokenInfoByIdentifier(identifier, this.#redisInstanceReader);
-          this.#debuglog('.get.retrieveAccessTokenInfoByIdentifier', uid, secretKey);
+          this.#debuglog('.get.retrieveAccessTokenInfoByIdentifier:', uid, secretKey);
 
           const actionType = ActionTypes.READ;
-          const actionObject = url;
+          const actionObject = xOriginalUri;
 
           const isTokenValid = verifyAccessToken(
             libmacaroons, deserializedAccessToken, uid, Buffer.from(secretKey, BufferToStringEncoding), actionType, actionObject,
           );
-          this.#debuglog('.get.isTokenValid', isTokenValid);
+          this.#debuglog('.get.isTokenValid:', isTokenValid);
 
           const status = isTokenValid === true ? OK_STATUS : UNAUTHORIZED_STATUS;
-          this.#debuglog('.get.status', status);
+          this.#debuglog('.get.status:', status);
 
           res.writeStatus(status);
 
