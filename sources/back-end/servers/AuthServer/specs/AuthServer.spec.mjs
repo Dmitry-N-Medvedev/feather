@@ -116,7 +116,7 @@ describe('Auth Server', () => {
     logger = null;
   });
 
-  it.only('should resolve node', async () => {
+  it('should resolve node', async () => {
     expect(node).to.exist;
   });
 
