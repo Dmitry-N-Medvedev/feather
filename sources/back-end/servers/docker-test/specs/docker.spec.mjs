@@ -55,7 +55,7 @@ describe('Docker', () => {
     client = null;
   });
 
-  it.only(`should get the /${questionnaireUrl}`, async () => {
+  it(`should get the /${questionnaireUrl}`, async () => {
     const forAction = Object.freeze({
       type: ActionTypes.READ,
       object: `/${questionnaireUrl}`,
