@@ -40,7 +40,7 @@ describe('LibAuthServer', () => {
       port: 6379,
     },
     ttl: {
-      accessToken: 500,
+      accessToken: 3000,
     },
   });
   const LibAuthServerConfig = Object.freeze({

@@ -41,7 +41,7 @@ services:
       CONTEXT: 'featheri'
       REDIS_HOST: "redis-server"
       REDIS_PORT: "6379"
-      TTL: "500"
+      TTL: "3000"
       UWS_PORT: "9090"
     depends_on:
       - redis-server

@@ -87,17 +87,20 @@ describe('Docker', () => {
       return result;
     };
     const obtainQuestionnaire = async (accessToken) => {
-      const {
-        body,
-      } = await client(`${urls.fileServer}/${questionnaireUrl}`, {
+      const STATUS_CODE_OK = 200;
+      const response = await client(`${urls.fileServer}/${questionnaireUrl}`, {
         headers: {
           Authorization: accessToken,
         },
-        body: JSON.stringify({
-          action: forAction,
-          location: Locations.FILE_SERVER,
-        }),
       });
+      const {
+        body,
+      } = response;
+
+      debuglog(response);
+
+      expect(response.statusCode).to.equal(STATUS_CODE_OK);
+
       const result = JSON.parse(body);
 
       debuglog('questionnaire:', result);
