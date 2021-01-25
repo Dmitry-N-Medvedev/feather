@@ -97,6 +97,7 @@ describe('LibAuthServer', () => {
     const response = await client(`questionnaires/${filePath}`, {
       headers: {
         Authorization: accessToken,
+        'X-Original-URI': forAction.object,
       },
     });
 
@@ -118,6 +119,7 @@ describe('LibAuthServer', () => {
     const response = await client(objectPath_In_Request, {
       headers: {
         Authorization: accessToken,
+        'X-Original-URI': objectPath_In_Request,
       },
       throwHttpErrors: false,
     });
