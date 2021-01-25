@@ -69,7 +69,7 @@ FROM clean-up as TokenServer
 USER pm2
 LABEL maintainer="Dmitry N. Medvedev <dmitry.medvedev@gmail.com>"
 LABEL version="0.0.0"
-EXPOSE 8080
+EXPOSE 9090
 ENV PATH=~/.volta:~/.volta/bin:$PATH
 ENV NODE_ENV=production
 WORKDIR /home/pm2/feather/sources/back-end/servers/TokenServer

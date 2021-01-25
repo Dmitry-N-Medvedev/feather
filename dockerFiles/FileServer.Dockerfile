@@ -92,7 +92,7 @@ FROM add-nginx-user AS clean-up
 #     && apt-get autoclean
 
 FROM clean-up AS file-server
-EXPOSE 8080
+EXPOSE 9091
 STOPSIGNAL SIGTERM
 CMD /usr/local/nginx/nginx -c /usr/local/nginx/nginx.conf
 

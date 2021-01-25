@@ -4,17 +4,6 @@ networks:
   feather-net:
     name: feather-net
     driver: bridge
-    driver_opts:
-      # com.docker.network.bridge.name UP TO 15 CHARACTERS LONG ONLY
-      com.docker.network.bridge.name: "feather-net-B"
-      com.docker.network.bridge.enable_ip_masquerade: "true"
-      com.docker.network.bridge.enable_icc: "true"
-      com.docker.network.bridge.host_binding_ipv4: "172.20.0.1"
-    ipam:
-      driver: default
-      config:
-        - subnet: "172.20.0.0/16"
-          gateway: "172.20.0.1"
 services:
   auth-server:
     container_name: auth-server
@@ -23,11 +12,11 @@ services:
       dockerfile: dockerFiles/AuthServer.Dockerfile
       network: host
     expose:
-      - "80"
+      - "8080"
     environment:
       NODE_ENV: 'development'
       NODE_DEBUG: 'AuthServer*,LibAuthServer*'
-      UWS_PORT: "80"
+      UWS_PORT: "8080"
       REDIS_HOST: "redis-server"
       REDIS_PORT: "6379"
     depends_on:
@@ -45,7 +34,7 @@ services:
       dockerfile: dockerFiles/TokenServer.Dockerfile
       network: host
     ports:
-      - "9091:9091"
+      - 9090:9090
     environment:
       NODE_ENV: 'development'
       NODE_DEBUG: 'Lib*,Token*'
@@ -53,7 +42,7 @@ services:
       REDIS_HOST: "redis-server"
       REDIS_PORT: "6379"
       TTL: "500"
-      UWS_PORT: "9091"
+      UWS_PORT: "9090"
     depends_on:
       - redis-server
     networks:
@@ -69,7 +58,7 @@ services:
       dockerfile: dockerFiles/FileServer.Dockerfile
       network: host
     ports:
-      - 80:8080
+      - 9091:9091
     depends_on:
       - auth-server
       - redis-server
