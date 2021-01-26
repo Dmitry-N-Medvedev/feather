@@ -4,7 +4,7 @@
   "description": "[bin] Token Server",
   "engines": {
     "node": "=15.6.0",
-    "pnpm": "=5.15.3"
+    "pnpm": "=5.16.0"
   },
   "engineStrict": true,
   "volta": {

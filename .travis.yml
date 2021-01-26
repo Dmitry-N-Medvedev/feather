@@ -9,7 +9,7 @@ before_install:
   - sudo apt-get -q update && sudo apt-get -y install redis
   - curl https://get.volta.sh | bash
   - volta install node@15.6.0
-  - volta install pnpm@5.15.3
+  - volta install pnpm@5.16.0
   - pnpm config set store-dir ~/.pnpm-store
 install:
   - pnpm --recursive install
