@@ -365,6 +365,38 @@ importers:
       eslint-plugin-node: ^11.1.0
       got: ^11.8.1
       mocha: ^8.2.1
+  sources/front-end/libs/questionnaire:
+    dependencies:
+      xstate: 4.16.0
+    devDependencies:
+      c8: 7.4.0
+      chai: 4.2.0
+      codecov: 3.8.1
+      cross-env: 7.0.3
+      dotenv: 8.2.0
+      eslint: 7.18.0
+      eslint-config-airbnb-base: 14.2.1_d4477e7d44043beb7952cd76bd313965
+      eslint-plugin-chai-friendly: 0.6.0_eslint@7.18.0
+      eslint-plugin-import: 2.22.1_eslint@7.18.0
+      eslint-plugin-node: 11.1.0_eslint@7.18.0
+      mocha: 8.2.1
+      nanoid: 3.1.20
+      node-fetch: 2.6.1
+    specifiers:
+      c8: ^7.4.0
+      chai: ^4.2.0
+      codecov: ^3.8.1
+      cross-env: ^7.0.3
+      dotenv: ^8.2.0
+      eslint: ^7.17.0
+      eslint-config-airbnb-base: ^14.2.1
+      eslint-plugin-chai-friendly: ^0.6.0
+      eslint-plugin-import: ^2.22.1
+      eslint-plugin-node: ^11.1.0
+      mocha: ^8.2.1
+      nanoid: ^3.1.20
+      node-fetch: ^2.6.1
+      xstate: ^4.16.0
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.11:
@@ -1509,7 +1541,7 @@ packages:
       call-bind: 1.0.2
       define-properties: 1.1.3
       es-abstract: 1.18.0-next.2
-      get-intrinsic: 1.0.2
+      get-intrinsic: 1.1.0
       is-string: 1.0.5
     dev: true
     engines:
@@ -1626,7 +1658,7 @@ packages:
   /call-bind/1.0.2:
     dependencies:
       function-bind: 1.1.1
-      get-intrinsic: 1.0.2
+      get-intrinsic: 1.1.0
     dev: true
     resolution:
       integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==
@@ -1658,7 +1690,7 @@ packages:
       check-error: 1.0.2
       deep-eql: 3.0.1
       get-func-name: 2.0.0
-      pathval: 1.1.0
+      pathval: 1.1.1
       type-detect: 4.0.8
     dev: true
     engines:
@@ -1990,7 +2022,7 @@ packages:
       call-bind: 1.0.2
       es-to-primitive: 1.2.1
       function-bind: 1.1.1
-      get-intrinsic: 1.0.2
+      get-intrinsic: 1.1.0
       has: 1.0.3
       has-symbols: 1.0.1
       is-callable: 1.2.2
@@ -2522,14 +2554,14 @@ packages:
     dev: true
     resolution:
       integrity: sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=
-  /get-intrinsic/1.0.2:
+  /get-intrinsic/1.1.0:
     dependencies:
       function-bind: 1.1.1
       has: 1.0.3
       has-symbols: 1.0.1
     dev: true
     resolution:
-      integrity: sha512-aeX0vrFm21ILl3+JpFFRNe9aUvp6VFZb2/CTbgLb8j75kOhvoNYjt9d8KA/tJG4gSo8nzEDedRl0h7vDmBYRVg==
+      integrity: sha512-M11rgtQp5GZMZzDL7jLTNxbDfurpzuau5uqRWDPvlHjfvg3TdScAZo96GLvhMjImrmR8uAt0FS2RLoMrfWGKlg==
   /get-stream/5.2.0:
     dependencies:
       pump: 3.0.0
@@ -3416,10 +3448,10 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-T2ZUsdZFHgA3u4e5PfPbjd7HDDpxPnQb5jN0SrDsjNSuVXHJqtwTnWqG0B1jZrgmJ/7lj1EmVIByWt1gxGkWvg==
-  /pathval/1.1.0:
+  /pathval/1.1.1:
     dev: true
     resolution:
-      integrity: sha1-uULm1L3mUwBe9rcTYd74cn0GReA=
+      integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==
   /picomatch/2.2.2:
     dev: true
     engines:
@@ -4090,6 +4122,10 @@ packages:
   /wrappy/1.0.2:
     resolution:
       integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
+  /xstate/4.16.0:
+    dev: false
+    resolution:
+      integrity: sha512-2k/49QYLdzG6Ye1JQWYFuPdU6dnRqHXcuFLxuORiuel04GjApSPct7wp2SOz9RAlNME5EkzclRKw1fHm5yejuA==
   /y18n/4.0.1:
     dev: true
     resolution:
