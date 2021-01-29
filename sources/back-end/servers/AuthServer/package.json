@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "description": "[bin] Auth Server",
   "engines": {
-    "node": "=15.6.0",
+    "node": "=15.7.0",
     "pnpm": "=5.16.0"
   },
   "engineStrict": true,
   "volta": {
-    "node": "15.6.0"
+    "node": "15.7.0"
   },
   "main": "./index.mjs",
   "scripts": {

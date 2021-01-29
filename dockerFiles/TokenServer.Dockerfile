@@ -37,7 +37,7 @@ USER pm2
 RUN curl --anyauth --progress-bar --http2 --retry 0 --tcp-fastopen https://get.volta.sh | bash
 
 FROM install-volta AS install-node-pnpm-pm2
-ARG node_version=15.6.0
+ARG node_version=15.7.0
 ARG pnpm_version=5.16.0
 ARG pm2_version=4.5.1
 ENV PATH=~/.volta/bin:$PATH
@@ -47,7 +47,7 @@ RUN volta install node@$node_version \
     && pnpm config set store-dir ~/.pnpm-store
 
 FROM install-node-pnpm-pm2 as copy-project-files
-ARG node_version=15.6.0
+ARG node_version=15.7.0
 WORKDIR /home/pm2/feather/
 COPY . ./
 USER root
