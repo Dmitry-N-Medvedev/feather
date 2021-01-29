@@ -40,7 +40,7 @@ describe('Docker', () => {
     fileServer: `http://${config.fileServer.host}:${config.fileServer.port}`,
   });
   debuglog({ urls });
-  const questionnaireUrl = 'questionnaires/2479b25e-6980-4208-8de7-2639e14604da.json';
+  const questionnaireUrl = 'questionnaires/Questionnaire.mjs';
   let client = null;
 
   before(() => {
@@ -97,15 +97,11 @@ describe('Docker', () => {
         body,
       } = response;
 
-      debuglog(response);
-
       expect(response.statusCode).to.equal(STATUS_CODE_OK);
 
-      const result = JSON.parse(body);
+      debuglog('questionnaire:', body);
 
-      debuglog('questionnaire:', result);
-
-      return result;
+      return body;
     };
 
     const accountToken = await obtainAccountToken();
