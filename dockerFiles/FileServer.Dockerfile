@@ -74,7 +74,7 @@ RUN mkdir -p /tmp/nginx-build/sources \
     && mkdir -p /usr/local/nginx/feather/questionnaires
 COPY dockerConfigs/nginx/nginx.conf /usr/local/nginx/
 COPY dockerConfigs/nginx/mime.types /usr/local/nginx/
-COPY dockerConfigs/nginx/questionnaires/2479b25e-6980-4208-8de7-2639e14604da.json /usr/local/nginx/feather/questionnaires/
+COPY sources/front-end/libs/questionnaire/files/Questionnaire.mjs /usr/local/nginx/feather/questionnaires/
 
 FROM build-nginx AS add-nginx-user
 RUN set -x \

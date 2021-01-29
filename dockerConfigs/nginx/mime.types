@@ -1,4 +1,4 @@
 types {
-  application/json  json;
-  application/gzip  gz;
+  application/javascript  mjs;
+  application/gzip        gz;
 }
