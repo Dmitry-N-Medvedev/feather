@@ -3,18 +3,19 @@
   "version": "0.0.0",
   "description": "insurance resolving system",
   "engines": {
-    "node": "=15.6.0",
+    "node": "=15.7.0",
     "pnpm": "=5.16.0"
   },
   "engineStrict": true,
   "volta": {
-    "node": "15.6.0"
+    "node": "15.7.0"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "verdaccio": "verdaccio --config=./verdaccio/config/verdaccio.yaml --listen=7348",
     "publish-libs": "cross-env NPM_CONFIG_REGISTRY=http://localhost:7348 pnpm --filter=./sources/back-end/libs -r publish",
-    "publish-all": "run-p -r verdaccio public-libs"
+    "publish-all": "run-p -r verdaccio public-libs",
+    "clean-install": "pnpm --recursive exec -- rm -rf node_modules && pnpm --recursive install"
   },
   "directories": {
     "doc": "docs"
