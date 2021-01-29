@@ -44,7 +44,7 @@ describe('LibAuthServer', () => {
     },
   });
   const LibAuthServerConfig = Object.freeze({
-    port: 19090,
+    port: 9090,
     redis: LibTokenFactoryConfig.redis,
   });
   let libRedisAdapter = null;
