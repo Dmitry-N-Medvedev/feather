@@ -14,7 +14,7 @@ before_install:
 install:
   - pnpm --recursive install
 script:
-  - pnpm --recursive run test
+  - pnpm --recursive --if-present --workspace-concurrency=1 run test
 after_success:
   - pnpm --recursive run coverage
 cache:
