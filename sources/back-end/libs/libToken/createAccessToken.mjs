@@ -15,7 +15,6 @@ export const createAccessToken = async (MacaroonBuilder = null, settings = {}, t
     throw new ReferenceError('action is undefined');
   }
 
-  // FIXME: use ajv: https://github.com/ajv-validator/ajv
   if (Object.keys(settings).length === 0) {
     throw new Error('settings are empty');
   }

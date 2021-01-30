@@ -14,7 +14,6 @@ const {
   expect,
 } = chai;
 
-// FIXME: remove this when everything is ready
 describe('Questionnaire', () => {
   it.only('should conduct the Questionnaire', () => new Promise((resolve, reject) => {
     let questionnaire = null;
